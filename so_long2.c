@@ -31,7 +31,7 @@
 # endif
 
 # ifndef SPEED
-#  define SPEED SIZE_IMG/12
+#  define SPEED 3 /*SIZE_IMG/12*/
 # endif
 
 # ifndef PLAYER
@@ -563,9 +563,9 @@ void	img_cpy(void *img, void *ptr, int size_line,int nb_line)
 	int	j;
 	int	*int_img;
 	int	*int_ptr;
-	int	count_line;
+	//int	count_line;
 
-	count_line = 0;
+	//count_line = 0;
 	int_ptr = (int *)ptr;
 	int_img = (int *)img;
 	int_ptr += (nb_line * SIZE_IMG) * (((size_line) * SIZE_IMG)-(size_line));
@@ -702,7 +702,7 @@ void	init_map(t_env *env, char **map)
 		j++;
 	}
 	//printf ("px == %d py == %d\n", env->map.p_x/SIZE_IMG, env->map.p_x/SIZE_IMG);
-	img_cpy(env->img.perso, &env->map.win_map[env->map.p_y*((ft_strlen(map[0])-1)*SIZE_IMG)+env->map.p_x], env->mlx.win_x / SIZE_IMG, 0);
+	img_cpy(env->img.perso, &env->map.win_map[env->map.p_y*env->mlx.win_x+env->map.p_x], env->mlx.win_x / SIZE_IMG, 0);
 	//print_player depuis position dans la structure
 	//print_mini_map(env, map);
 	mlx_put_image_to_window(env->mlx.mlx, env->mlx.mlx_win,env->img.mlx_img,0, 0);
