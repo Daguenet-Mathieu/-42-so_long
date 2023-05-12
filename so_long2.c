@@ -31,7 +31,7 @@
 # endif
 
 # ifndef SPEED
-#  define SPEED 3 /*SIZE_IMG/12*/
+#  define SPEED 1 /*SIZE_IMG/12*/
 # endif
 
 # ifndef PLAYER
@@ -677,12 +677,16 @@ void	init_map(t_env *env, char **map)
 	int		j;
 	int		count;
 	t_index	index;
+	int		tmp_x;
+	int		tmp_y;
 
 	count = 0;
 	j = 0;
 	set_map(env->map.win_map, env->mlx.win_y*env->mlx.win_x);
 	get_start_map(&index, env, map);
-	//printf("x_start == %d, x_end == %d, y_start == %d, y_end %d\n", index.x_start, index.x_end,index.y_start, index.y_end);
+	printf("x_start == %d, x_end == %d, y_start == %d, y_end %d\n", index.x_start, index.x_end,index.y_start, index.y_end);
+	tmp_x = env->map.p_x - (index.x_start*SIZE_IMG);
+	tmp_y = env->map.p_y - (index.y_start*SIZE_IMG);
 	while (index.y_start + j < index.y_end)
 	{
 		i = 0;
@@ -701,8 +705,11 @@ void	init_map(t_env *env, char **map)
 		}
 		j++;
 	}
-	//printf ("px == %d py == %d\n", env->map.p_x/SIZE_IMG, env->map.p_x/SIZE_IMG);
-	img_cpy(env->img.perso, &env->map.win_map[env->map.p_y*env->mlx.win_x+env->map.p_x], env->mlx.win_x / SIZE_IMG, 0);
+	printf("tmpx == %d, tmp_y == %d\n", tmp_x, tmp_y);
+	printf ("px == %d py == %d\n", env->map.p_x, env->map.p_y);
+	printf("screen y == %d , x == %d\n", env->mlx.win_y, env->mlx.win_x);
+	printf("index == %d\n", env->map.p_y*env->mlx.win_x+env->map.p_x);
+	img_cpy(env->img.perso, &env->map.win_map[tmp_y*env->mlx.win_x+tmp_x], env->mlx.win_x / SIZE_IMG, 0);
 	//print_player depuis position dans la structure
 	//print_mini_map(env, map);
 	mlx_put_image_to_window(env->mlx.mlx, env->mlx.mlx_win,env->img.mlx_img,0, 0);
@@ -724,7 +731,6 @@ void	print_nb_move(t_env *env)
 	ft_putstr("nb move = ", 1);
 	ft_putnbr(env->map.nb_move);
 }
-#include<limits.h>
 int	handle_key(t_env *env)
 {
 	char	**map;
@@ -741,19 +747,6 @@ int	handle_key(t_env *env)
 	//unsigned long int test = 0;
 	//unsigned long int test2 ;	
 	//unsigned long int test3 ;
-	/*while (test < ULONG_MAX)
-	{
-		test2 = 0;
-		while (test2 < ULONG_MAX)
-		{
-			test3 = 0;
-			while (test3 < ULONG_MAX)
-				test3++;
-			test2++;
-		//	printf("%lu\n", test2);
-		}
-		test++;
-	}*/
 	if (!env->key.up && !env->key.down && !env->key.left && !env->key.right)
 		return (0);
 	if ((env->key.up && env->key.down) || (env->key.left && env->key.right))
@@ -873,8 +866,10 @@ int	main(int ac, char **av)
 	env.map.nb_move = 0;
 	env.map.nb_collectible = get_map_nb(env.map.all_map, 'C');
 	get_player_pos(env.map.all_map, &env.map.p_x, &env.map.p_y);
+	printf("map y == %d\n", env.map.p_y);
 	env.map.p_x *= SIZE_IMG;
 	env.map.p_y *= SIZE_IMG;
+	printf("map y == %d\n", env.map.p_y);
 	if (!verif_wall(env.map.all_map))
 		return (1);
 	get_map_size(&env);
