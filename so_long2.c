@@ -25,13 +25,40 @@
 #  define SIZE_LINE 1 
 # endif
 
+# ifndef VERTICAL
+#  define VERTICAL 2
+# endif
 
-# ifndef SIZE_IMG
-#  define SIZE_IMG 64
+# ifndef HORIZON 
+#  define HORIZON 1
+# endif
+
+# ifndef MINI_MAP
+#  define MINI_MAP 128
+# endif
+
+# ifndef MINI_PX
+#  define MINI_PX 1
+# endif
+
+# ifndef WIDTH_IMG
+#  define WIDTH_IMG 32
+# endif
+
+# ifndef HEIGHT_IMG
+#  define HEIGHT_IMG 32
+# endif
+
+# ifndef HEIGHT_PLAYER
+#  define HEIGHT_PLAYER 16
+# endif
+
+# ifndef WIDTH_PLAYER
+#  define WIDTH_PLAYER 16
 # endif
 
 # ifndef SPEED
-#  define SPEED 1 /*SIZE_IMG/12*/
+#  define SPEED 1 /*WIDTH_IMG/12*/
 # endif
 
 # ifndef PLAYER
@@ -113,10 +140,13 @@ typedef struct	s_map
 {
 		char	**all_map;
 		int		*win_map;
+		int		*full_map;
 		int		nb_collectible;
 		int		nb_move;
 		int		p_x;
 		int		p_y;
+		int		height;
+		int		size_line;
 }				t_map;
 
 typedef struct	s_img
@@ -136,6 +166,7 @@ typedef struct	s_env
 		t_map	map;	
 		t_key	key;
 		t_pos	pos;
+		t_index	index;
 		int		loop;
 }				t_env;
 
@@ -442,7 +473,7 @@ void	get_player_pos(char **map, int *x, int *y)
 		i = 0;
 		while (map[j][i])
 		{
-			if (map[j][i] == 'p' || map[j][i] == 'P')
+			if (map[j][i] == 'P')
 			{
 				player = 1;
 				break ;
@@ -476,33 +507,19 @@ void	print_map(char **map)
 	}
 }
 
-void	*init_square(int color, int color2)
+void	*init_square(int color, int size)
 {
 	int	*ptr;
 	int i;
-	int	b;
 
 	i = 0;
-	ptr = malloc(sizeof(int) * SIZE_IMG*SIZE_IMG);
+	ptr = malloc(sizeof(int) * size*size);
 	if (!ptr)
 		return (NULL);
-	while (i < SIZE_IMG*SIZE_IMG)
+	while (i < size*size)
 	{
-		b = 0;
-		while (i < SIZE_IMG*SIZE_IMG && b < 8)
-		{
-			ptr[i] = color2;
-			i++;
-			b++;
-		}
-		b = 0;
-		while (i < SIZE_IMG*SIZE_IMG && b < 5)
-		{
 			ptr[i] = color;
 			i++;
-			b++;
-		}
-	//	i++;
 	}
 	return (ptr);
 }
@@ -514,11 +531,11 @@ void	*init_square(int color, int color2)
 // 	int	radius;
 
 // 	i = 0;
-// 	radius = SIZE_IMG/3;
-// 	ptr = malloc(sizeof(int) * SIZE_IMG*SIZE_IMG);
+// 	radius = WIDTH_IMG/3;
+// 	ptr = malloc(sizeof(int) * WIDTH_IMG*WIDTH_IMG);
 // 	if (!ptr)
 // 		return (NULL);
-// 	while (i < SIZE_IMG*SIZE_IMG)
+// 	while (i < WIDTH_IMG*WIDTH_IMG)
 // 	{
 // 		ptr[i] = color;
 // 		i++;
@@ -534,17 +551,17 @@ void	*init_circle(int color)
 	int x, y;
 
 	i = 0;
-	radius = SIZE_IMG/4;
-	ptr = malloc(sizeof(int) * SIZE_IMG*SIZE_IMG);
+	radius = WIDTH_IMG/4;
+	ptr = malloc(sizeof(int) * WIDTH_IMG*HEIGHT_IMG);
 	if (!ptr)
 		return (NULL);
 
-	for (y = 0; y < SIZE_IMG; y++)
+	for (y = 0; y < WIDTH_IMG; y++)
 	{
-		for (x = 0; x < SIZE_IMG; x++)
+		for (x = 0; x < WIDTH_IMG; x++)
 		{
-			int dx = x - SIZE_IMG / 2;
-			int dy = y - SIZE_IMG / 2;
+			int dx = x - WIDTH_IMG / 2;
+			int dy = y - WIDTH_IMG / 2;
 			int distance_squared = dx*dx + dy*dy;
 			if (distance_squared <= radius*radius)
 				ptr[i] = color;
@@ -557,28 +574,28 @@ void	*init_circle(int color)
 }
 
 
-void	img_cpy(void *img, void *ptr, int size_line,int nb_line)
+void	img_cpy(void *img, void *ptr, int size_line,int nb_line, int size)
 {
 	int	i;
 	int	j;
 	int	*int_img;
 	int	*int_ptr;
-	//int	count_line;
+	//printf("size line == %d\n", size_line);
 
-	//count_line = 0;
 	int_ptr = (int *)ptr;
 	int_img = (int *)img;
-	int_ptr += (nb_line * SIZE_IMG) * (((size_line) * SIZE_IMG)-(size_line));
+	int_ptr += (nb_line * WIDTH_IMG) * (((size_line) * WIDTH_IMG)-(size_line));
 	i = 0;
 	j = 0;
-	while (i < SIZE_IMG * SIZE_IMG)
+	while (i < size * size)
 	{
+		//printf("i == %d et int_img == %p\n", i, int_img);
 		if (int_img[i] != 0)
 			int_ptr[j] = int_img[i];
-		if (j == SIZE_IMG-1)
+		if (j == size-1)
 		{
 			j = 0;
-			int_ptr += (size_line) * SIZE_IMG;
+			int_ptr += (size_line) * WIDTH_IMG;
 		}
 		else
 			j++;
@@ -586,42 +603,42 @@ void	img_cpy(void *img, void *ptr, int size_line,int nb_line)
 	}
 }
 
-void	get_start_map(t_index *index, t_env *env, char **map)
+void	get_start_map(t_index *index, t_env *env)
 {
 	int	player_x;
 	int player_y;
 
-	player_x = env->map.p_x / SIZE_IMG;
-	player_y = env->map.p_y / SIZE_IMG;
-	if (player_x < (env->mlx.win_x / SIZE_IMG)/2)
+	player_x = env->map.p_x;
+	player_y = env->map.p_y;
+	if (player_x < (env->mlx.win_x)/2)
 	{
 		index->x_start = 0;
-		index->x_end = (env->mlx.win_x / SIZE_IMG);
+		index->x_end = (env->mlx.win_x);
 	}
-	else if ((ft_strlen(map[0]) - 1) - player_x <= (env->mlx.win_x / SIZE_IMG)/2)
+	else if (env->map.size_line*WIDTH_IMG - player_x <= (env->mlx.win_x)/2)
 	{
-		index->x_end = (ft_strlen(map[0]) - 1);
-		index->x_start = index->x_end - (env->mlx.win_x / SIZE_IMG);
+		index->x_end = env->map.size_line*WIDTH_IMG;
+		index->x_start = index->x_end - (env->mlx.win_x);
 	}
 	else
 	{
-		index->x_start = player_x - (env->mlx.win_x / SIZE_IMG)/2;
-		index->x_end = index->x_start + (env->mlx.win_x / SIZE_IMG);
+		index->x_start = player_x - (env->mlx.win_x)/2;
+		index->x_end = index->x_start + (env->mlx.win_x / WIDTH_IMG);
 	}
-	if (player_y < (env->mlx.win_y / SIZE_IMG)/2)
+	if (player_y < (env->mlx.win_y)/2)
 	{
 		index->y_start = 0;
-		index->y_end = (env->mlx.win_y / SIZE_IMG);
+		index->y_end = (env->mlx.win_y);
 	}
-	else if (tab_size(map) - player_y <= (env->mlx.win_y / SIZE_IMG)/2)
+	else if (env->map.height - player_y <= (env->mlx.win_y)/2)
 	{
-		index->y_end = (tab_size(map));
-		index->y_start = index->y_end - (env->mlx.win_y / SIZE_IMG);
+		index->y_end = env->map.height*HEIGHT_IMG;
+		index->y_start = index->y_end - (env->mlx.win_y);
 	}
 	else
 	{
-		index->y_start = player_y - ((env->mlx.win_y / SIZE_IMG)/2);
-		index->y_end = index->y_start + (env->mlx.win_y / SIZE_IMG);
+		index->y_start = player_y - ((env->mlx.win_y)/2);
+		index->y_end = index->y_start + (env->mlx.win_y);
 	}
 }
 
@@ -634,20 +651,23 @@ void	set_map(int *ptr, int size)
 	while (i < size)
 	{
 		b = 0;
-		while (i < size && b < 8)
-		{
-			ptr[i] = FLOOR2;
-			i++;
-			b++;
-		}
-		b = 0;
-		while (i < size && b < 5)
-		{
-			ptr[i] = FLOOR;
-			i++;
-			b++;
-		}
-	//	i++;
+		//printf("i == %d \n", i);
+		ptr[i] = FLOOR;
+		//while (i < size && b < 8)
+		//{
+		//	ptr[i] = FLOOR2;
+		//	i++;
+		//	b++;
+		//}
+		//b = 0;
+		//while (i < size && b < 5)
+		//{
+		//	printf("i == %d\n", i);
+		//	ptr[i] = FLOOR;
+		//	i++;
+		//	b++;
+		//}
+		i++;
 	}
 	/*while (i < size)
 	{
@@ -661,58 +681,96 @@ void	set_map(int *ptr, int size)
 //	int	i;
 //
 //	i = 0;
-//	ptr = malloc(sizeof(int) * (SIZE_IMG*SIZE_IMG));
+//	ptr = malloc(sizeof(int) * (WIDTH_IMG*WIDTH_IMG));
 //	if (!ptr)
 //		return (NULL);
-//	while (i < SIZE_IMG*SIZE_IMG)
+//	while (i < WIDTH_IMG*WIDTH_IMG)
 //	{
 //
 //		i++;
 //	}
 //}
 
-void	init_map(t_env *env, char **map)
+void	init_full_map(t_env *env)
 {
 	int		i;
 	int		j;
 	int		count;
-	t_index	index;
-	int		tmp_x;
-	int		tmp_y;
+	char	**map;
 
 	count = 0;
 	j = 0;
-	set_map(env->map.win_map, env->mlx.win_y*env->mlx.win_x);
-	get_start_map(&index, env, map);
-	printf("x_start == %d, x_end == %d, y_start == %d, y_end %d\n", index.x_start, index.x_end,index.y_start, index.y_end);
-	tmp_x = env->map.p_x - (index.x_start*SIZE_IMG);
-	tmp_y = env->map.p_y - (index.y_start*SIZE_IMG);
-	while (index.y_start + j < index.y_end)
+	map = env->map.all_map;
+	//printf("line == %d, height == %d \n", env->map.size_line, env->map.height);
+	set_map(env->map.full_map, env->map.size_line*WIDTH_IMG*env->map.height*HEIGHT_IMG);
+	//get_start_map(env->index, env, map);
+	//printf("x_start == %d, x_end == %d, y_start == %d, y_end %d\n", index.x_start, index.x_end,index.y_start, index.y_end);
+	while (/*index.y_start + j < index.y_end*/ map[j])
 	{
 		i = 0;
-		while (index.x_start + i < index.x_end )
+		while (map[j][i] && map[j][i] != '\n')
 		{
-			if (map[index.y_start + j][index.x_start + i] == '1')
-				img_cpy(env->img.wall, &env->map.win_map[count*SIZE_IMG], env->mlx.win_x / SIZE_IMG, j);
+			if (map[j][i] == '1')
+				img_cpy(env->img.wall, &env->map.full_map[count*WIDTH_IMG], env->map.size_line, j, WIDTH_IMG);
 			//else if (map[index.y_start + j][index.x_start + i] == '0')
-				//img_cpy(env->img.floor, &env->map.win_map[count*SIZE_IMG], env->mlx.win_x / SIZE_IMG, j);
-			else if (map[index.y_start + j][index.x_start + i] == 'E')
-				img_cpy(env->img.exit, &env->map.win_map[count*SIZE_IMG], env->mlx.win_x / SIZE_IMG, j);
-			else if (map[index.y_start + j][index.x_start + i] == 'C')
-				img_cpy(env->img.objet, &env->map.win_map[count*SIZE_IMG], env->mlx.win_x / SIZE_IMG, j);
+			//	img_cpy(env->img.floor, &env->map.win_map[count*WIDTH_IMG], env->mlx.win_x / WIDTH_IMG, j);
+			else if (map[j][i] == 'E')
+				img_cpy(env->img.exit, &env->map.full_map[count*WIDTH_IMG], env->map.size_line, j, WIDTH_IMG);
+			else if (map[j][i] == 'C')
+				img_cpy(env->img.objet, &env->map.full_map[count*WIDTH_IMG], env->map.size_line, j, WIDTH_IMG);
 			count++;
 			i++;
 		}
 		j++;
 	}
-	printf("tmpx == %d, tmp_y == %d\n", tmp_x, tmp_y);
-	printf ("px == %d py == %d\n", env->map.p_x, env->map.p_y);
-	printf("screen y == %d , x == %d\n", env->mlx.win_y, env->mlx.win_x);
-	printf("index == %d\n", env->map.p_y*env->mlx.win_x+env->map.p_x);
-	img_cpy(env->img.perso, &env->map.win_map[tmp_y*env->mlx.win_x+tmp_x], env->mlx.win_x / SIZE_IMG, 0);
-	//print_player depuis position dans la structure
-	//print_mini_map(env, map);
-	mlx_put_image_to_window(env->mlx.mlx, env->mlx.mlx_win,env->img.mlx_img,0, 0);
+}
+
+void	copy_map(int *all_map, int *win_map, t_env env)
+{
+	int	i;
+	int	j;
+	int	size;
+
+	i = 0;
+	j = 0;
+	size = env.map.size_line*WIDTH_IMG * env.map.height*HEIGHT_IMG;
+	//printf("size*SIZEIMG == %d\n", size);
+	//printf("size == %d\n",  size);
+	//printf("size line == %d et height == %d\n", env.map.size_line, env.map.height);
+	//printf("win_size == %d\n", env.mlx.win_x*env.mlx.win_y);
+	while (i < size)
+	{
+		//printf("i == %d\n", i);
+		//printf("j == %d\n", j);
+		win_map[i] = all_map[j];
+		if (j == (env.map.size_line*WIDTH_IMG)-1)
+		{
+			j = 0;
+			all_map += (env.map.size_line * WIDTH_IMG);
+		}
+		else
+			j++;
+		i++;
+	}
+}
+
+void	load_map(t_env *env)
+{
+		t_index	index;
+		int		tmp_x;
+		int		tmp_y;
+
+		get_start_map(&index, env);
+		printf("perso x == %d, perso y == %d\n", env->map.p_x, env->map.p_y);
+		printf("decallage == %d, y start == %d et x start == %d\n", index.y_start*(env->map.size_line*WIDTH_IMG)+index.x_start, index.y_start,index.x_start);
+		tmp_x = env->map.p_x - (index.x_start);
+		tmp_y = env->map.p_y - (index.y_start);
+		//copy_map(&env->map.full_map[index.y_start*(env->map.size_line*WIDTH_IMG)+index.x_start], env->map.win_map, *env);
+		copy_map(env->map.full_map, env->map.win_map, *env);
+		//set_map(env->map.win_map, env->mlx.win_x*env->mlx.win_y);
+		img_cpy(env->img.perso, &env->map.win_map[tmp_y*env->mlx.win_x+tmp_x], env->mlx.win_x / WIDTH_IMG, 0, WIDTH_PLAYER);
+		//print_mini_map(env, map);
+		mlx_put_image_to_window(env->mlx.mlx, env->mlx.mlx_win,env->img.mlx_img, 0, 0);
 }
 
 void	print_nb_move(t_env *env)
@@ -731,22 +789,59 @@ void	print_nb_move(t_env *env)
 	ft_putstr("nb move = ", 1);
 	ft_putnbr(env->map.nb_move);
 }
+
+int	check_collision2(int player ,int case_check, int sens)
+{
+	int	collision;
+
+	collision = 0;
+	if (sens == HORIZON)
+	{
+		if ((player > case_check && player * WIDTH_PLAYER > case_check * WIDTH_IMG) || (player * WIDTH_PLAYER < case_check && player < case_check * WIDTH_IMG))
+			collision = 1;
+	}
+	else
+	{
+		if ((player > case_check && player * HEIGHT_PLAYER > case_check * WIDTH_IMG) || (player * HEIGHT_PLAYER < case_check && player < case_check * WIDTH_IMG))
+			collision = 1;
+	}
+	if (collision)
+		return (1);
+	return (0);
+}
+
+
+int	check_collision(char **map, int new_x, int new_y)
+{
+	int	x;
+	int	y;
+
+	x = new_x / WIDTH_IMG;
+	y = new_y / WIDTH_IMG;
+	if (map[y + 1][x] == '1' && check_collision2(new_y, (y + 1) * HEIGHT_IMG, VERTICAL))
+		return (1);
+	if (map[y][x + 1] == '1' && check_collision2(new_x, (x + 1) * WIDTH_IMG, HORIZON))
+		return (1);
+	if (map[y + 1][x + 1] == '1' && check_collision2(new_x, (x + 1) * WIDTH_IMG, HORIZON) && check_collision2(new_y, (y + 1) * HEIGHT_IMG, VERTICAL))
+		return (1);
+	if (map[y - 1][x] == '1' && check_collision2(new_y, (y - 1) * HEIGHT_IMG,VERTICAL))
+		return (1);
+	if (map[y][x - 1] == '1' && check_collision2(new_x, (x - 1) * WIDTH_IMG, HORIZON))
+		return (1);
+	if (map[y - 1][x - 1] == '1' && check_collision2(new_x, (x - 1) * WIDTH_IMG, HORIZON) && check_collision2(new_y, (y - 1) * HEIGHT_IMG,VERTICAL))
+		return (1);
+	if (map[y - 1][x + 1] == '1' && check_collision2(new_x, (x + 1) * WIDTH_IMG, HORIZON) && check_collision2(new_y, (y - 1) * HEIGHT_IMG,VERTICAL))
+		return (1);
+	if (map[y + 1][x - 1] == '1' && check_collision2(new_x, (x - 1) * WIDTH_IMG, HORIZON) && check_collision2(new_y, (y + 1) * HEIGHT_IMG,VERTICAL))
+		return (1);
+	return (0);
+}
+
 int	handle_key(t_env *env)
 {
 	char	**map;
 	t_pos	pos;
 
-//	printf("loop == %d\n", env->loop);
-//	if (env->loop > 0 && env->loop < 100000)
-//	{
-//		env->loop++;
-//		return (0);
-//	}
-//	env->loop = 0;
-	//usleep(30000);
-	//unsigned long int test = 0;
-	//unsigned long int test2 ;	
-	//unsigned long int test3 ;
 	if (!env->key.up && !env->key.down && !env->key.left && !env->key.right)
 		return (0);
 	if ((env->key.up && env->key.down) || (env->key.left && env->key.right))
@@ -777,9 +872,11 @@ int	handle_key(t_env *env)
 //		map[pos.new_y][pos.new_x] = 'p';
 //	else
 //		map[pos.new_y][pos.new_x] = 'P';
+//	if (check_collision(map, pos.new_x, pos.new_y))
+//		return (0);
 	env->map.p_x = pos.new_x;
 	env->map.p_y = pos.new_y;
-	init_map(env, env->map.all_map);
+	load_map(env);
 	print_nb_move(env);
 	//print_map(map);
 	if (!env->map.nb_collectible && map[pos.new_y][pos.new_x] == 'p')
@@ -798,18 +895,18 @@ void	get_map_size(t_env *env)
 {
 	mlx_get_screen_size(env->mlx.mlx, &env->mlx.screen_x, &env->mlx.screen_y);
 	env->mlx.screen_y -= 130;
-	env->mlx.win_x = (ft_strlen(env->map.all_map[0]) - 1);
-	env->mlx.win_y = tab_size(env->map.all_map);
-	env->mlx.screen_x = env->mlx.screen_x / SIZE_IMG;
-	env->mlx.screen_y = env->mlx.screen_y / SIZE_IMG;
-	//env->mlx.win_x = (env->mlx.win_x) * SIZE_IMG;
-	//env->mlx.win_y = (env->mlx.win_y) * SIZE_IMG;
+	env->mlx.win_x = env->map.size_line;
+	env->mlx.win_y = env->map.height;
+	env->mlx.screen_x = env->mlx.screen_x / WIDTH_IMG;
+	env->mlx.screen_y = env->mlx.screen_y / WIDTH_IMG;
+	//env->mlx.win_x = (env->mlx.win_x) * WIDTH_IMG;
+	//env->mlx.win_y = (env->mlx.win_y) * WIDTH_IMG;
 	if (env->mlx.screen_x < env->mlx.win_x)
 		env->mlx.win_x = env->mlx.screen_x;
 	if (env->mlx.screen_y < env->mlx.win_y)
 		env->mlx.win_y = env->mlx.screen_y;
-	env->mlx.win_x *= SIZE_IMG;
-	env->mlx.win_y *= SIZE_IMG;
+	env->mlx.win_x *= WIDTH_IMG;
+	env->mlx.win_y *= WIDTH_IMG;
 }
 
 int	handle_keyrelease(int key_code, 	t_env *env)
@@ -863,13 +960,16 @@ int	main(int ac, char **av)
 	env.map.all_map = get_map(av[1]);
 	if (!env.map.all_map)
 		return (1);
+	env.map.height = tab_size(env.map.all_map);
+	env.map.size_line = ft_strlen(env.map.all_map[0]) - 1;
+	env.map.full_map = malloc(sizeof(int) * env.map.height * HEIGHT_IMG * env.map.size_line * WIDTH_IMG);
+	if (!env.map.full_map)
+		return (1);
 	env.map.nb_move = 0;
 	env.map.nb_collectible = get_map_nb(env.map.all_map, 'C');
 	get_player_pos(env.map.all_map, &env.map.p_x, &env.map.p_y);
-	printf("map y == %d\n", env.map.p_y);
-	env.map.p_x *= SIZE_IMG;
-	env.map.p_y *= SIZE_IMG;
-	printf("map y == %d\n", env.map.p_y);
+	env.map.p_x *= WIDTH_IMG;
+	env.map.p_y *= WIDTH_IMG;
 	if (!verif_wall(env.map.all_map))
 		return (1);
 	get_map_size(&env);
@@ -878,15 +978,17 @@ int	main(int ac, char **av)
 		return 1;
 	env.map.win_map = (int *)mlx_get_data_addr(env.img.mlx_img, &bpp, &size_line, &endian);
 
-	env.img.wall = init_square(0x778899, 0x778899);
-	env.img.exit = init_square(EXIT, EXIT);
-	env.img.perso = init_square(PLAYER, PLAYER);
+	env.img.wall = init_square(0x778899, WIDTH_IMG);
+	env.img.exit = init_square(EXIT, WIDTH_IMG);
+	env.img.perso = init_square(PLAYER, WIDTH_PLAYER);
 	env.img.objet = init_circle(OBJET);
-	env.img.floor = init_square(FLOOR, FLOOR2);
+	env.img.floor = init_square(FLOOR, WIDTH_IMG);
 	if (!env.img.wall || !env.img.exit || !env.img.perso || !env.img.objet || !env.img.floor)
-		return (free_struct(&env), 0);
+		return (free_struct(&env), printf("coucou le malloc rate\n"),0);
 	env.mlx.mlx_win = mlx_new_window(env.mlx.mlx, env.mlx.win_x, env.mlx.win_y, "so_long");
-	init_map(&env, env.map.all_map);
+	printf("img main == %p\n", env.img.wall);
+	init_full_map(&env);
+	load_map(&env);
 	if (!env.mlx.mlx_win)
 		return (free_struct(&env), 1);
 	mlx_hook(env.mlx.mlx_win, 17, 0, mlx_close, &env);
