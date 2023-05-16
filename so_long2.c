@@ -50,11 +50,11 @@
 # endif
 
 # ifndef HEIGHT_PLAYER
-#  define HEIGHT_PLAYER 16
+#  define HEIGHT_PLAYER 64
 # endif
 
 # ifndef WIDTH_PLAYER
-#  define WIDTH_PLAYER 16
+#  define WIDTH_PLAYER 64
 # endif
 
 # ifndef SPEED
@@ -62,11 +62,11 @@
 # endif
 
 # ifndef PLAYER
-#  define PLAYER 0x0000FF
+#  define PLAYER 0xFFFFFF /*0x0000FF*/
 # endif
 
 # ifndef FLOOR
-#  define FLOOR 0x136d15
+#  define FLOOR 0 /*0x136d15*/
 # endif
 
 # ifndef FLOOR2
@@ -645,12 +645,12 @@ void	get_start_map(t_index *index, t_env *env)
 void	set_map(int *ptr, int size)
 {
 	int	i;
-	int	b;
+	//int	b;
 
 	i = 0;
 	while (i < size)
 	{
-		b = 0;
+		//b = 0;
 		//printf("i == %d \n", i);
 		ptr[i] = FLOOR;
 		//while (i < size && b < 8)
@@ -733,7 +733,7 @@ void	copy_map(int *all_map, int *win_map, t_env env)
 
 	i = 0;
 	j = 0;
-	size = env.map.size_line*WIDTH_IMG * env.map.height*HEIGHT_IMG;
+	size = env.mlx.win_x * env.mlx.win_y;
 	//printf("size*SIZEIMG == %d\n", size);
 	//printf("size == %d\n",  size);
 	//printf("size line == %d et height == %d\n", env.map.size_line, env.map.height);
@@ -743,7 +743,7 @@ void	copy_map(int *all_map, int *win_map, t_env env)
 		//printf("i == %d\n", i);
 		//printf("j == %d\n", j);
 		win_map[i] = all_map[j];
-		if (j == (env.map.size_line*WIDTH_IMG)-1)
+		if (j == (env.mlx.win_x)-1)
 		{
 			j = 0;
 			all_map += (env.map.size_line * WIDTH_IMG);
@@ -761,12 +761,15 @@ void	load_map(t_env *env)
 		int		tmp_y;
 
 		get_start_map(&index, env);
-		printf("perso x == %d, perso y == %d\n", env->map.p_x, env->map.p_y);
-		printf("decallage == %d, y start == %d et x start == %d\n", index.y_start*(env->map.size_line*WIDTH_IMG)+index.x_start, index.y_start,index.x_start);
+	//	printf("avant decallage %p, apres decallage %p\n", env->map.full_map, &env->map.full_map[index.y_start*(env->map.size_line*WIDTH_IMG)+index.x_start]);
+	//	printf("startx == %d, starty == %d\n", index.x_start, index.y_start);
+	//	printf("size win x == %d et size win y == %d\n", env->mlx.win_x/WIDTH_IMG , env->mlx.win_y/WIDTH_IMG);
+	//	printf("perso x == %d, perso y == %d\n", env->map.p_x, env->map.p_y);
+	//	printf("decallage == %d, y start == %d et x start == %d\n", index.y_start*(env->map.size_line*WIDTH_IMG)+index.x_start, index.y_start,index.x_start);
 		tmp_x = env->map.p_x - (index.x_start);
 		tmp_y = env->map.p_y - (index.y_start);
-		//copy_map(&env->map.full_map[index.y_start*(env->map.size_line*WIDTH_IMG)+index.x_start], env->map.win_map, *env);
-		copy_map(env->map.full_map, env->map.win_map, *env);
+		copy_map(&env->map.full_map[index.y_start*(env->map.size_line*WIDTH_IMG)+index.x_start], env->map.win_map, *env);
+		//copy_map(env->map.full_map, env->map.win_map, *env);
 		//set_map(env->map.win_map, env->mlx.win_x*env->mlx.win_y);
 		img_cpy(env->img.perso, &env->map.win_map[tmp_y*env->mlx.win_x+tmp_x], env->mlx.win_x / WIDTH_IMG, 0, WIDTH_PLAYER);
 		//print_mini_map(env, map);
@@ -777,10 +780,19 @@ void	print_nb_move(t_env *env)
 {
 	char	c;
 	int		i;
+	int		size;
+	int		nb;
 
 	c = 8;
 	i = 0;
-	while (i < 15)
+	size = 11;
+	nb = env->map.nb_move;
+	while (nb > 9)
+	{
+		nb/=10;
+		size++;
+	}
+	while (i < size)
 	{
 		write(1, &c, 1);
 		i++;
@@ -790,21 +802,15 @@ void	print_nb_move(t_env *env)
 	ft_putnbr(env->map.nb_move);
 }
 
-int	check_collision2(int player ,int case_check, int sens)
+int	check_collision2(int player ,int case_check)
 {
 	int	collision;
+	printf("colllision @ == \n player == %d, case == %d case en px == %d et case + HEIGHT_IMG == %d\n", player, case_check/WIDTH_IMG ,case_check, case_check-1 + HEIGHT_IMG);
 
 	collision = 0;
-	if (sens == HORIZON)
-	{
-		if ((player > case_check && player * WIDTH_PLAYER > case_check * WIDTH_IMG) || (player * WIDTH_PLAYER < case_check && player < case_check * WIDTH_IMG))
+		if ((player > case_check && player <= case_check-1 + HEIGHT_IMG) /*|| (player < case_check && player >= case_check)*/)
 			collision = 1;
-	}
-	else
-	{
-		if ((player > case_check && player * HEIGHT_PLAYER > case_check * WIDTH_IMG) || (player * HEIGHT_PLAYER < case_check && player < case_check * WIDTH_IMG))
-			collision = 1;
-	}
+
 	if (collision)
 		return (1);
 	return (0);
@@ -818,21 +824,21 @@ int	check_collision(char **map, int new_x, int new_y)
 
 	x = new_x / WIDTH_IMG;
 	y = new_y / WIDTH_IMG;
-	if (map[y + 1][x] == '1' && check_collision2(new_y, (y + 1) * HEIGHT_IMG, VERTICAL))
+	if (map[y + 1][x] == '1' && check_collision2(new_y, (y*HEIGHT_IMG) + HEIGHT_IMG))
 		return (1);
-	if (map[y][x + 1] == '1' && check_collision2(new_x, (x + 1) * WIDTH_IMG, HORIZON))
+	if (map[y][x + 1] == '1' && check_collision2(new_x, (x*WIDTH_IMG) + WIDTH_IMG))
 		return (1);
-	if (map[y + 1][x + 1] == '1' && check_collision2(new_x, (x + 1) * WIDTH_IMG, HORIZON) && check_collision2(new_y, (y + 1) * HEIGHT_IMG, VERTICAL))
+	if (map[y + 1][x + 1] == '1' && check_collision2(new_x, (x*WIDTH_IMG) + WIDTH_IMG) && check_collision2(new_y, (y*HEIGHT_IMG) + HEIGHT_IMG))
 		return (1);
-	if (map[y - 1][x] == '1' && check_collision2(new_y, (y - 1) * HEIGHT_IMG,VERTICAL))
+	if (map[y - 1][x] == '1' && check_collision2(new_y, (y*HEIGHT_IMG) - HEIGHT_IMG))
 		return (1);
-	if (map[y][x - 1] == '1' && check_collision2(new_x, (x - 1) * WIDTH_IMG, HORIZON))
+	if (map[y][x - 1] == '1' && check_collision2(new_x, (x*WIDTH_IMG) - WIDTH_IMG))
 		return (1);
-	if (map[y - 1][x - 1] == '1' && check_collision2(new_x, (x - 1) * WIDTH_IMG, HORIZON) && check_collision2(new_y, (y - 1) * HEIGHT_IMG,VERTICAL))
+	if (map[y - 1][x - 1] == '1' && check_collision2(new_x, (x*WIDTH_IMG) - WIDTH_IMG) && check_collision2(new_y, (y*HEIGHT_IMG) - HEIGHT_IMG))
 		return (1);
-	if (map[y - 1][x + 1] == '1' && check_collision2(new_x, (x + 1) * WIDTH_IMG, HORIZON) && check_collision2(new_y, (y - 1) * HEIGHT_IMG,VERTICAL))
+	if (map[y - 1][x + 1] == '1' && check_collision2(new_x, (x*WIDTH_IMG) + WIDTH_IMG) && check_collision2(new_y, (y*HEIGHT_IMG) + HEIGHT_IMG))
 		return (1);
-	if (map[y + 1][x - 1] == '1' && check_collision2(new_x, (x - 1) * WIDTH_IMG, HORIZON) && check_collision2(new_y, (y + 1) * HEIGHT_IMG,VERTICAL))
+	if (map[y + 1][x - 1] == '1' && check_collision2(new_x, (x*WIDTH_IMG) - WIDTH_IMG) && check_collision2(new_y, (y*HEIGHT_IMG) + HEIGHT_IMG))
 		return (1);
 	return (0);
 }
@@ -872,14 +878,22 @@ int	handle_key(t_env *env)
 //		map[pos.new_y][pos.new_x] = 'p';
 //	else
 //		map[pos.new_y][pos.new_x] = 'P';
-//	if (check_collision(map, pos.new_x, pos.new_y))
-//		return (0);
+	if (map[pos.new_y/HEIGHT_IMG][pos.new_x/WIDTH_IMG] == '1')
+		return (0);
+	//printf("coucou le deplcement\n");
+	printf("modulo == %d \n", (pos.new_y+HEIGHT_PLAYER) % HEIGHT_IMG);
+	//if ((pos.new_y + HEIGHT_PLAYER) % HEIGHT_IMG == 1 && map[(pos.new_y/HEIGHT_IMG) + 1][pos.new_x/WIDTH_IMG] == '1')
+	//	return (0);
+	if (map[(pos.new_y/HEIGHT_PLAYER)+ 1][pos.new_x/WIDTH_IMG] == '1' && (pos.new_y + HEIGHT_PLAYER) < (pos.new_y/HEIGHT_IMG + 1))
+		return (0);
+	//if (check_collision(map, pos.new_x, pos.new_y))
+	//	return (0);
 	env->map.p_x = pos.new_x;
 	env->map.p_y = pos.new_y;
 	load_map(env);
 	print_nb_move(env);
 	//print_map(map);
-	if (!env->map.nb_collectible && map[pos.new_y][pos.new_x] == 'p')
+	if (!env->map.nb_collectible && map[pos.new_y/HEIGHT_IMG][pos.new_x/WIDTH_IMG] == 'p' && !pos.new_y % HEIGHT_IMG && !pos.new_x % WIDTH_IMG)
 		{
 			ft_putstr("\nvictoire!\n", 1);
 			exit (0);
