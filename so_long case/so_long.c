@@ -723,7 +723,7 @@ int	handle_key(t_env *env)
 	char	**map;
 	t_pos	pos;
 
-	usleep(40000);
+	usleep(80000);
 	//unsigned long int test = 0;
 	//unsigned long int test2 ;	
 	//unsigned long int test3 ;

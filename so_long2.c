@@ -20,6 +20,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include "get_next_line.h"
+#include "flood_fill.h"
 
 # ifndef SIZE_LINE
 #  define SIZE_LINE 1 
@@ -42,31 +43,31 @@
 # endif
 
 # ifndef WIDTH_IMG
-#  define WIDTH_IMG 32
+#  define WIDTH_IMG 64
 # endif
 
 # ifndef HEIGHT_IMG
-#  define HEIGHT_IMG 32
+#  define HEIGHT_IMG 64
 # endif
 
 # ifndef HEIGHT_PLAYER
-#  define HEIGHT_PLAYER 64
+#  define HEIGHT_PLAYER 32
 # endif
 
 # ifndef WIDTH_PLAYER
-#  define WIDTH_PLAYER 64
+#  define WIDTH_PLAYER 32
 # endif
 
 # ifndef SPEED
-#  define SPEED 1 /*WIDTH_IMG/12*/
+#  define SPEED 4 /*WIDTH_IMG/12*/
 # endif
 
 # ifndef PLAYER
-#  define PLAYER 0xFFFFFF /*0x0000FF*/
+#  define PLAYER 0x0000FF
 # endif
 
 # ifndef FLOOR
-#  define FLOOR 0 /*0x136d15*/
+#  define FLOOR 0x136d15
 # endif
 
 # ifndef FLOOR2
@@ -334,6 +335,8 @@ char **get_map(char *file_name)
 	t_list	*new;
 	char	**map;
 	int fd = open(file_name, O_RDONLY);
+	if (fd < 0)
+		return (ft_putstr("fail open", 2), NULL);
 	int a = 1;
 	char *line;
 	
@@ -610,7 +613,7 @@ void	get_start_map(t_index *index, t_env *env)
 
 	player_x = env->map.p_x;
 	player_y = env->map.p_y;
-	if (player_x < (env->mlx.win_x)/2)
+	if (player_x <= (env->mlx.win_x)/2)
 	{
 		index->x_start = 0;
 		index->x_end = (env->mlx.win_x);
@@ -625,12 +628,12 @@ void	get_start_map(t_index *index, t_env *env)
 		index->x_start = player_x - (env->mlx.win_x)/2;
 		index->x_end = index->x_start + (env->mlx.win_x / WIDTH_IMG);
 	}
-	if (player_y < (env->mlx.win_y)/2)
+	if (player_y <= (env->mlx.win_y)/2)
 	{
 		index->y_start = 0;
 		index->y_end = (env->mlx.win_y);
 	}
-	else if (env->map.height - player_y <= (env->mlx.win_y)/2)
+	else if (env->map.height*HEIGHT_IMG - player_y <= (env->mlx.win_y)/2)
 	{
 		index->y_end = env->map.height*HEIGHT_IMG;
 		index->y_start = index->y_end - (env->mlx.win_y);
@@ -805,7 +808,7 @@ void	print_nb_move(t_env *env)
 int	check_collision2(int player ,int case_check)
 {
 	int	collision;
-	printf("colllision @ == \n player == %d, case == %d case en px == %d et case + HEIGHT_IMG == %d\n", player, case_check/WIDTH_IMG ,case_check, case_check-1 + HEIGHT_IMG);
+//	printf("colllision @ == \n player == %d, case == %d case en px == %d et case + HEIGHT_IMG == %d\n", player, case_check/WIDTH_IMG ,case_check, case_check-1 + HEIGHT_IMG);
 
 	collision = 0;
 		if ((player > case_check && player <= case_check-1 + HEIGHT_IMG) /*|| (player < case_check && player >= case_check)*/)
@@ -816,7 +819,7 @@ int	check_collision2(int player ,int case_check)
 	return (0);
 }
 
-
+/*
 int	check_collision(char **map, int new_x, int new_y)
 {
 	int	x;
@@ -841,6 +844,70 @@ int	check_collision(char **map, int new_x, int new_y)
 	if (map[y + 1][x - 1] == '1' && check_collision2(new_x, (x*WIDTH_IMG) - WIDTH_IMG) && check_collision2(new_y, (y*HEIGHT_IMG) + HEIGHT_IMG))
 		return (1);
 	return (0);
+}
+*/
+int	check_collision(t_env *env, t_pos pos,char c, int collision)
+{
+	if (((pos.new_x) % HEIGHT_IMG) > WIDTH_IMG - WIDTH_PLAYER && env->map.all_map[(pos.new_y)/HEIGHT_IMG][pos.new_x/WIDTH_IMG] == c)
+		return (0);
+	if (((pos.new_y) % HEIGHT_IMG) > HEIGHT_IMG - HEIGHT_PLAYER && env->map.all_map[(pos.new_y)/HEIGHT_IMG][pos.new_x/WIDTH_IMG] == c)
+		return (0);
+	if ((pos.new_x % WIDTH_IMG) > WIDTH_IMG - HEIGHT_PLAYER + (collision*(WIDTH_IMG/100)) && env->map.all_map[pos.new_y/HEIGHT_IMG][pos.new_x/WIDTH_IMG+1] == c)
+		return (0);
+	if ((pos.new_y % HEIGHT_IMG) > (WIDTH_IMG - HEIGHT_PLAYER) + (collision*(WIDTH_IMG/100)) && env->map.all_map[pos.new_y/HEIGHT_IMG + 1][pos.new_x/WIDTH_IMG] == c)
+		return (0);
+	if ((pos.new_x % WIDTH_IMG) > WIDTH_IMG - HEIGHT_PLAYER + (collision*(WIDTH_IMG/100)) && (pos.new_y % HEIGHT_IMG) > WIDTH_IMG - HEIGHT_PLAYER \
+		&& env->map.all_map[pos.new_y/HEIGHT_IMG + 1][pos.new_x/WIDTH_IMG + 1] == c)
+		return (0);
+	return (1);
+}
+
+int	check_wall(t_env *env, t_pos pos)
+{
+	if (!check_collision(env, pos, '1', 0))
+		return (0);
+	return (1);
+}
+
+int check_collectible(t_env *env, t_pos pos, char c)
+{
+	int collision;
+	int check;
+
+	check = 0;
+	collision = 35;
+	if (((pos.new_x) % HEIGHT_IMG) > WIDTH_IMG - WIDTH_PLAYER && env->map.all_map[(pos.new_y)/HEIGHT_IMG][pos.new_x/WIDTH_IMG] == c)
+	{
+		env->map.all_map[(pos.new_y)/HEIGHT_IMG][pos.new_x/WIDTH_IMG] = '0';
+		env->map.nb_collectible -= 1;
+		check = 1;
+	}
+	if (((pos.new_y) % HEIGHT_IMG) > HEIGHT_IMG - HEIGHT_PLAYER && env->map.all_map[(pos.new_y)/HEIGHT_IMG][pos.new_x/WIDTH_IMG] == c)
+	{
+		env->map.all_map[(pos.new_y)/HEIGHT_IMG][pos.new_x/WIDTH_IMG] = '0';
+		env->map.nb_collectible -= 1;
+		check = 1;
+	}
+	if ((pos.new_x % WIDTH_IMG) > WIDTH_IMG - HEIGHT_PLAYER + (collision*(WIDTH_IMG/100)) && env->map.all_map[pos.new_y/HEIGHT_IMG][pos.new_x/WIDTH_IMG+1] == c)
+	{
+		env->map.all_map[pos.new_y/HEIGHT_IMG][pos.new_x/WIDTH_IMG+1] = '0';
+		env->map.nb_collectible -= 1;
+		check = 1;
+	}
+	if ((pos.new_y % HEIGHT_IMG) > (WIDTH_IMG - HEIGHT_PLAYER) + (collision*(WIDTH_IMG/100)) && env->map.all_map[pos.new_y/HEIGHT_IMG + 1][pos.new_x/WIDTH_IMG] == c)
+	{
+		env->map.all_map[pos.new_y/HEIGHT_IMG + 1][pos.new_x/WIDTH_IMG] = '0';
+		env->map.nb_collectible -= 1;
+		check = 1;
+	}
+	if ((pos.new_x % WIDTH_IMG) > WIDTH_IMG - HEIGHT_PLAYER + (collision*(WIDTH_IMG/100)) && (pos.new_y % HEIGHT_IMG) > WIDTH_IMG - HEIGHT_PLAYER \
+		&& env->map.all_map[pos.new_y/HEIGHT_IMG + 1][pos.new_x/WIDTH_IMG + 1] == c)
+	{
+		env->map.all_map[pos.new_y/HEIGHT_IMG + 1][pos.new_x/WIDTH_IMG + 1] = '0';
+		env->map.nb_collectible -= 1;
+		check = 1;
+	}
+	return (check);
 }
 
 int	handle_key(t_env *env)
@@ -878,14 +945,22 @@ int	handle_key(t_env *env)
 //		map[pos.new_y][pos.new_x] = 'p';
 //	else
 //		map[pos.new_y][pos.new_x] = 'P';
-	if (map[pos.new_y/HEIGHT_IMG][pos.new_x/WIDTH_IMG] == '1')
+
+//collision == (WIDTH_IMG - HEIGHT_PLAYER) + (35*WIDTH_IMG/100)
+	//printf("modulo x == %d et modulo y == %d \n", (pos.new_x) % HEIGHT_IMG, (pos.new_y) % HEIGHT_IMG);
+	if (!check_wall(env, pos))
 		return (0);
+	if (check_collectible(env, pos, 'C'))
+		init_full_map(env);
+	//if ((pos.new_y % HEIGHT_IMG) > WIDTH_IMG - HEIGHT_PLAYER && map[pos.new_y/HEIGHT_IMG][pos.new_x/WIDTH_IMG + 1] == '1')
+	//	return (0);
+	//if (map[pos.new_y/HEIGHT_IMG][pos.new_x/WIDTH_IMG+1] == '1' && (pos.new_y % HEIGHT_IMG) > 0)
+	//	return (0);
 	//printf("coucou le deplcement\n");
-	printf("modulo == %d \n", (pos.new_y+HEIGHT_PLAYER) % HEIGHT_IMG);
 	//if ((pos.new_y + HEIGHT_PLAYER) % HEIGHT_IMG == 1 && map[(pos.new_y/HEIGHT_IMG) + 1][pos.new_x/WIDTH_IMG] == '1')
 	//	return (0);
-	if (map[(pos.new_y/HEIGHT_PLAYER)+ 1][pos.new_x/WIDTH_IMG] == '1' && (pos.new_y + HEIGHT_PLAYER) < (pos.new_y/HEIGHT_IMG + 1))
-		return (0);
+	//if (map[(pos.new_y/HEIGHT_PLAYER)+ 1][pos.new_x/WIDTH_IMG] == '1' && (pos.new_y + HEIGHT_PLAYER) < (pos.new_y/HEIGHT_IMG + 1))
+	//	return (0);
 	//if (check_collision(map, pos.new_x, pos.new_y))
 	//	return (0);
 	env->map.p_x = pos.new_x;
@@ -957,12 +1032,25 @@ int	handle_keypress(int key_code,	t_env *env)
 	return (key_code);
 }
 
+void floodfill(int x, int y, char **map)
+{
+    if (map[y][x] == '1' || map[y][x] == 'F')
+        return;
+    else if (map[y][x] != 'P')
+        map[y][x] = 'F';
+    floodfill(x + 1, y, map);
+    floodfill(x - 1, y , map);
+    floodfill(x, y + 1, map);
+    floodfill(x, y - 1, map);
+}
+
 int	main(int ac, char **av)
 {
 	t_env env;
 	int	bpp;
 	int	endian;
 	int	size_line;
+
 	if (ac != 2)
 		return (1);
 	init_struct(&env);
@@ -982,6 +1070,9 @@ int	main(int ac, char **av)
 	env.map.nb_move = 0;
 	env.map.nb_collectible = get_map_nb(env.map.all_map, 'C');
 	get_player_pos(env.map.all_map, &env.map.p_x, &env.map.p_y);
+	//flood_fill(env.map.p_x, env.map.p_y, env.map.all_map);
+	//print_map(env.map.all_map);
+	//return (0);
 	env.map.p_x *= WIDTH_IMG;
 	env.map.p_y *= WIDTH_IMG;
 	if (!verif_wall(env.map.all_map))
@@ -991,7 +1082,7 @@ int	main(int ac, char **av)
 	if (!env.img.mlx_img)
 		return 1;
 	env.map.win_map = (int *)mlx_get_data_addr(env.img.mlx_img, &bpp, &size_line, &endian);
-
+	
 	env.img.wall = init_square(0x778899, WIDTH_IMG);
 	env.img.exit = init_square(EXIT, WIDTH_IMG);
 	env.img.perso = init_square(PLAYER, WIDTH_PLAYER);
@@ -1000,7 +1091,7 @@ int	main(int ac, char **av)
 	if (!env.img.wall || !env.img.exit || !env.img.perso || !env.img.objet || !env.img.floor)
 		return (free_struct(&env), printf("coucou le malloc rate\n"),0);
 	env.mlx.mlx_win = mlx_new_window(env.mlx.mlx, env.mlx.win_x, env.mlx.win_y, "so_long");
-	printf("img main == %p\n", env.img.wall);
+	//printf("img main == %p\n", env.img.wall);
 	init_full_map(&env);
 	load_map(&env);
 	if (!env.mlx.mlx_win)

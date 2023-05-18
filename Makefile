@@ -10,8 +10,10 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRC				= so_long2.c\
-				  get_next_line.c
+SRC				= flood_fill_utils.c\
+				  get_next_line.c\
+				  flood_fill.c\
+				  so_long2.c
 SRCBONUS			= 
 OBJS				= ${SRC:.c=.o}
 OBJBONUS			= ${SRCBONUS:.c=.o}
