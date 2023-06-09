@@ -1,4 +1,5 @@
-# ifndef FLOOD_FILL_H
+#ifndef FLOOD_FILL_H
+# define FLOOD_FILL_H
 
 #include<stdlib.h>
 #include<unistd.h>
