@@ -14,7 +14,7 @@
 #include "image.h"
 
 # ifndef SPEED
-#  define SPEED  4
+#  define SPEED  2
 # endif
 
 
