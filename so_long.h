@@ -14,9 +14,33 @@
 #include "image.h"
 
 # ifndef SPEED
-#  define SPEED  2
+#  define SPEED  1
 # endif
 
+# ifndef BEFORE
+#  define BEFORE  0
+# endif
+
+# ifndef AFTER
+#  define AFTER  1
+# endif
+
+typedef struct	s_case
+{
+	unsigned int	x;
+	unsigned int	y;
+	unsigned int	area_in_case;
+}				t_case;
+
+typedef struct	s_iter
+{
+	int			i;
+	int			j;
+	int			c;
+	int			count;
+	char		**map;
+
+}				t_iter;
 
 typedef struct	s_index
 {
@@ -26,29 +50,12 @@ typedef struct	s_index
 	int	y_end;
 }				t_index;
 
-typedef struct	s_mini_map
-{
-	void	*wall;
-	void	*perso;
-	void	*collectible;
-	void	*exit;
-	int		img_size;
-	int		size_unit;
-	int		nb_element_x;
-	int		nb_element_y;
-	int		player_x;
-	int		player_y;
-
-	//utiliser s_index;
-}				t_mini_map;
-
 typedef struct s_key
 {
 	int	up;
 	int	down;
 	int	left;
 	int	right;
-	int	loop_count;
 }				t_key;
 
 typedef struct	s_pos
@@ -57,6 +64,8 @@ typedef struct	s_pos
 		int		x;
 		int		new_y;
 		int		new_x;
+		int		sens_x;
+		int		sens_y;
 }				t_pos;
 
 typedef struct	s_mlx
@@ -71,8 +80,8 @@ typedef struct	s_mlx
 
 typedef struct	s_obj
 {
-			int	x_start;
-			int	y_start;
+			int	x;
+			int	y;
 			int	i;
 			int	j;
 

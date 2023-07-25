@@ -1,20 +1,16 @@
 #ifndef IMAGE_H
 # define IMAGE_H
 
-# ifndef WIDTH_IMG
-#  define WIDTH_IMG 128
-# endif
-
-# ifndef HEIGHT_IMG
-#  define HEIGHT_IMG 128
+# ifndef IMG
+#  define IMG 128
 # endif
 
 # ifndef HEIGHT_PLAYER
-#  define HEIGHT_PLAYER 80
+#  define HEIGHT_PLAYER 120
 # endif
 
 # ifndef WIDTH_PLAYER
-#  define WIDTH_PLAYER HEIGHT_PLAYER/2
+#  define WIDTH_PLAYER 80
 # endif
 
 # ifndef PLAYER

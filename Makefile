@@ -19,7 +19,7 @@ OBJS				= ${SRC:.c=.o}
 OBJBONUS			= ${SRCBONUS:.c=.o}
 HEADER				= so_long.h
 CC					= clang
-FLAGS				= -Wall -Wextra -Werror -g3
+FLAGS				= -Wall -Wextra -Werror -g
 FLAGSDEBUG			= -Wall -Wextra -Werror -g -fsanitize=address
 NAME				= so_long
 NAMEBONUS			= 
