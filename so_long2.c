@@ -630,41 +630,40 @@ void remove_collectible(t_env *env, int i, int j)
 	}
 }
 
+int	in_case_y(t_pos pos, int c_y, int size)
+{
+	if (c_y >= pos.new_y && c_y < pos.new_y + HEIGHT_PLAYER)
+		return (1);
+	if (c_y + size > pos.new_y && c_y + size <= pos.new_y + HEIGHT_PLAYER)
+		return (1);
+	if (c_y <= pos.new_y && c_y + size > pos.new_y + HEIGHT_PLAYER)
+		return (1);
+	return (0);
+}
+
 int	player_in_case(t_pos pos, t_case this_case, int pixel)
 {
-	int cx = this_case.x * IMG;
-	int cy = this_case.y * IMG;
-	int px = pos.new_x;
-	int py = pos.new_y;
-	//get_side()?
-	//si side == BEFORE
-	//check depuis le droite ou le haut x/y le nb pixel
-	//si side == in
-	// check si sens '+' '-' pour x et y calc nombre de pixel de presence dans la case
-	//si side == out
-	// check le nombre de pixel avant le bord gauche
-	if (px + WIDTH_PLAYER > cx + pixel && px + WIDTH_PLAYER < cx + IMG - pixel)
+	int c_x;
+	int c_y;
+	int	size;
+
+	c_x = this_case.x * IMG + pixel;
+	c_y = this_case.y * IMG + pixel;
+	size = IMG - (pixel * 2);
+
+	if (c_x > pos.new_x && c_x < pos.new_x + WIDTH_PLAYER)
 	{
-		if (py + HEIGHT_PLAYER > cy + pixel && py + HEIGHT_PLAYER < cy + IMG - pixel)
-			return (1);
-		if (py >= cy + pixel && py < cy + IMG - pixel)
+		if (in_case_y(pos, c_y, size))
 			return (1);
 	}
-	if (px >= cx + pixel && px < cx + IMG - pixel)
+	if (c_x + size > pos.new_x && c_x + size <= pos.new_x + WIDTH_PLAYER)
 	{
-		if (py + HEIGHT_PLAYER > cy + pixel && py + HEIGHT_PLAYER < cy + IMG - pixel)
-			return (1);
-		if (py >= cy + pixel && py < cy + IMG - pixel)
+		if (in_case_y(pos, c_y, size))
 			return (1);
 	}
-	if (px+WIDTH_PLAYER/2 >= cx + pixel && px+WIDTH_PLAYER/2 < cx + IMG)
+	if (c_x <= pos.new_x && c_x + size > pos.new_x + WIDTH_PLAYER)
 	{
-		if (py+HEIGHT_PLAYER/2 >= cy + pixel && py+HEIGHT_PLAYER/2 < cy + IMG - pixel)
-			return (1);
-	}
-	if (px+WIDTH_PLAYER/2 <= cx + IMG - pixel && px+WIDTH_PLAYER/2 > cx)
-	{
-		if (py+HEIGHT_PLAYER/2 <= cy + IMG - pixel && py+HEIGHT_PLAYER/2 > cy)
+		if (in_case_y(pos, c_y, size))
 			return (1);
 	}
 	return (0);
@@ -678,7 +677,8 @@ int	verif_case(t_env *env, t_pos pos, char c, t_case this_case)
 	if (c == 'E')
 		pixel = IMG / 2;
 	if (c == 'C')
-		pixel = IMG / 4 - 20;
+		pixel = IMG / 4;
+	printf("in case == ? %d case == %c\n", player_in_case(pos, this_case, pixel), c);
 	if (player_in_case(pos, this_case, pixel) \
 		&& env->map.all_map[this_case.y][this_case.x] == c)
 	{
