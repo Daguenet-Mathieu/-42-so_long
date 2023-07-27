@@ -1,5 +1,5 @@
-# ifndef FLOOD_FILL_H
-# define FLOOD_FILL_H
+# ifndef SO_LONG_H
+# define SO_LONG_H
 
 #include "mlx_linux/mlx.h"
 #include <stdio.h>
@@ -14,7 +14,7 @@
 #include "image.h"
 
 # ifndef SPEED
-#  define SPEED  1
+#  define SPEED  3
 # endif
 
 # ifndef BEFORE

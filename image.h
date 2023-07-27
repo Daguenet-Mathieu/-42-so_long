@@ -6,19 +6,24 @@
 # endif
 
 # ifndef HEIGHT_PLAYER
-#  define HEIGHT_PLAYER 40
+#  define HEIGHT_PLAYER 128
 # endif
 
+
 # ifndef WIDTH_PLAYER
-#  define WIDTH_PLAYER 20
+#  define WIDTH_PLAYER 80
 # endif
 
 # ifndef PLAYER
-#  define PLAYER 0x0000FF
+#  define PLAYER 0xFFFFFF
 # endif
 
+//# ifndef FLOOR
+//#  define FLOOR 0x136d15
+//# endif
+
 # ifndef FLOOR
-#  define FLOOR 0x136d15
+#  define FLOOR 0x3d211e
 # endif
 
 # ifndef FLOOR2

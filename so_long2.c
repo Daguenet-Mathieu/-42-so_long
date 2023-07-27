@@ -143,13 +143,13 @@ char	**cpy_map(char **map)
 	j = 0;
 	new_map = malloc(sizeof(char *) * (tab_size(map) + 1));
 	if (!new_map)
-		return (ft_error("fail malloc\n"), NULL);
+		return (ft_error("fail malloc cpy ;ap\n"), NULL);
 	while (map[j])
 	{
 		i = 0;
 		new_map[j] = malloc(ft_strlen(map[j] + 1));
-		if (new_map[j])
-			return (free_tab(new_map), ft_error("fail malloc\n"), NULL);
+		if (!new_map[j])
+			return (free_tab(new_map), ft_error("fail malloc copy ligne map\n"), NULL);
 		while (map[j][i])
 		{
 			new_map[j][i] = map[j][i];
@@ -678,7 +678,6 @@ int	verif_case(t_env *env, t_pos pos, char c, t_case this_case)
 		pixel = IMG / 2;
 	if (c == 'C')
 		pixel = IMG / 4;
-	printf("in case == ? %d case == %c\n", player_in_case(pos, this_case, pixel), c);
 	if (player_in_case(pos, this_case, pixel) \
 		&& env->map.all_map[this_case.y][this_case.x] == c)
 	{
@@ -720,46 +719,82 @@ int check(t_env *env, t_pos pos, char c)
 	return (0);
 }
 
-void init_new_pos(t_pos *pos, t_env *env)
+void init_pos_l_r(t_pos *pos, t_env *env, int *move, int speed)
 {
 	pos->x = env->map.p_x;
 	pos->y = env->map.p_y;
 	pos->new_x = pos->x;
 	pos->new_y = pos->y;
-	if (env->key.up)
-		pos->new_y = pos->y - SPEED;
 	if (env->key.right)
-		pos->new_x = pos->x + SPEED;
+	{
+		pos->new_x = pos->x + speed;
+		*move += 1;
+	}
 	if (env->key.left)
-		pos->new_x = pos->x - SPEED;
+	{
+		pos->new_x = pos->x - speed;
+		*move += 1;
+	}
+}
+void init_pos_t_d(t_pos *pos, t_env *env, int *move, int speed)
+{
+	pos->x = env->map.p_x;
+	pos->y = env->map.p_y;
+	pos->new_x = pos->x;
+	pos->new_y = pos->y;
 	if (env->key.down)
-		pos->new_y = pos->y + SPEED;
+	{
+		pos->new_y = pos->y + speed;
+		*move += 1;
+	}
 	if (env->key.up)
-		pos->sens_x = 0;
-	else
-		pos->sens_x = 1;
-	if (env->key.left)
-		pos->sens_y = 0;
-	else
-		pos->sens_y = 1;
+	{
+		pos->new_y = pos->y - speed;
+		*move += 1;
+	}
+}
+
+int	multiple_key(t_env *env)
+{
+	int	ret;
+
+	ret = 0;
+	if ((env->key.left && env->key.down) || (env->key.left && env->key.up))
+		ret += 1;
+	if ((env->key.right && env->key.down) || (env->key.right && env->key.up))
+		ret += 1;
+	if ((env->key.up && env->key.left) || (env->key.up && env->key.right))
+		ret += 1;
+	if ((env->key.down && env->key.left) || (env->key.down && env->key.right))
+		ret += 1;
+	return (ret);
 }
 
 int	handle_key(t_env *env)
 {
 	t_pos	pos;
+	int		move;
+	int		speed;
 
-	if (!env->key.up && !env->key.down && !env->key.left && !env->key.right)
-		return (0);
-	if ((env->key.up && env->key.down) || (env->key.left && env->key.right))
-		return (0);
-	init_new_pos(&pos, env);
+	move = 0;
+	speed = SPEED;
+	if (multiple_key(env))
+		speed = speed / 2;
+	init_pos_t_d(&pos, env, &move, speed);
+	if (!check(env, pos, '1'))
+	{
+		check(env, pos, 'C');
+		env->map.p_y = pos.new_y;
+		load_map(env);
+	}
+	init_pos_l_r(&pos, env, &move, speed);
 	if (check(env, pos, '1'))
 		return (0);
 	check(env, pos, 'C');
 	env->map.p_x = pos.new_x;
-	env->map.p_y = pos.new_y;
 	load_map(env);
-	print_nb_move(env);
+	if (move)
+		print_nb_move(env);
 	if (!env->map.nb_collectible && check(env, pos, 'E'))
 		{
 			ft_putstr("\nEnd!\n", 1);
@@ -770,30 +805,39 @@ int	handle_key(t_env *env)
 
 void	get_map_size(t_env *env)
 {
+	env->map.height = tab_size(env->map.all_map);
+	env->map.size_line = ft_strlen(env->map.all_map[0]) - 1;
 	mlx_get_screen_size(env->mlx.mlx, &env->mlx.screen_x, &env->mlx.screen_y);
-	env->mlx.screen_y -= 130;
-	env->mlx.win_x = env->map.size_line;
-	env->mlx.win_y = env->map.height;
-	env->mlx.screen_x = env->mlx.screen_x / IMG;
-	env->mlx.screen_y = env->mlx.screen_y / IMG;
+	env->mlx.screen_y -= 125;
+	env->mlx.win_x = env->map.size_line * IMG;
+	env->mlx.win_y = env->map.height * IMG;
 	if (env->mlx.screen_x < env->mlx.win_x)
 		env->mlx.win_x = env->mlx.screen_x;
 	if (env->mlx.screen_y < env->mlx.win_y)
 		env->mlx.win_y = env->mlx.screen_y;
-	env->mlx.win_x *= IMG;
-	env->mlx.win_y *= IMG;
 }
 
-int	handle_keyrelease(int key_code, 	t_env *env)
+void	ajust_touch(int *key1, int *key2)
+{
+		if (*key1 == 2)
+			*key2 = 1;
+		if (*key1 == 1)
+			*key2 = 0;
+		else if (*key2 == 2)
+			*key2 = 1;
+		*key1 = 0;
+}
+
+int	handle_keyrelease(int key_code, t_env *env)
 {
 	if (key_code == 65363 || key_code == 100)
-		env->key.right = 0;
+		ajust_touch(&env->key.right, &env->key.left);
 	else if (key_code == 65362 || key_code == 119)
-		env->key.up = 0;
+		ajust_touch(&env->key.up, &env->key.down);
 	else if (key_code == 65361 || key_code == 97)
-		env->key.left = 0;
+		ajust_touch(&env->key.left, &env->key.right);
 	else if (key_code == 65364 || key_code == 115)
-		env->key.down = 0;
+		ajust_touch(&env->key.down, &env->key.up);
 	return (key_code);
 }
 
@@ -802,13 +846,37 @@ int	handle_keypress(int key_code,	t_env *env)
 	if (key_code == 65307)
 		exit(0);
 	if (key_code == 65363 || key_code == 100)
-		env->key.right = 1;
+	{
+		if (env->key.left)
+			env->key.right = 2;
+		else
+			env->key.right = 1;
+		env->key.left = 0;
+	}
 	else if (key_code == 65362 || key_code == 119)
-		env->key.up = 1;
+	{
+		if (env->key.down)
+			env->key.up = 2;
+		else
+			env->key.up = 1;
+		env->key.down = 0;
+	}
 	else if (key_code == 65361 || key_code == 97)
-		env->key.left = 1;
+	{
+		if (env->key.right)
+			env->key.left = 2;
+		else
+			env->key.left = 1;
+		env->key.right = 0;
+	}
 	else if (key_code == 65364 || key_code == 115)
-		env->key.down = 1;
+	{
+		if (env->key.up)
+			env->key.down = 2;
+		else
+			env->key.down = 1;
+		env->key.up = 0;
+	}
 	return (key_code);
 }
 
@@ -890,8 +958,16 @@ void	set_hooks_mlx(t_env *env)
 int	verif_map(t_env *env)
 {	
 	(void) env;
-	//flood_fill(env.map.p_x, env.map.p_y, env.map.all_map);
-	//return (0);
+	char **new_map;
+
+	if (!verif_wall(env->map.all_map))
+		return (0);
+	new_map = cpy_map(env->map.all_map);
+	if (!new_map)
+		return (0);
+	//flood_fill(env->map.p_x, env->map.p_y, new_map);
+	//verif resuktat
+	free_tab(new_map);
 	return (1);
 }
 
@@ -904,44 +980,61 @@ int	check_arg(int size, char *arg)
 	return (1);
 }
 
+void	init_info(t_env *env)
+{
+	env->map.nb_move = 0;
+	env->map.nb_collectible = get_map_nb(env->map.all_map, 'C');
+	get_player_pos(env->map.all_map, &env->map.p_x, &env->map.p_y);
+	env->map.p_x = env->map.p_x * IMG + (IMG / 2 - WIDTH_PLAYER/2);
+	env->map.p_y = env->map.p_y * IMG + (IMG / 2 - HEIGHT_PLAYER/2);
+}
+
+int	init_map(t_env *env)
+{
+	int	endian;
+	int	size_line;
+	int	bpp;
+
+	env->map.full_map = malloc(sizeof(int) * env->map.height * IMG * env->map.size_line * IMG);
+	if (!env->map.full_map)
+		return (0);
+	env->img.mlx_img = (int *)mlx_new_image(env->mlx.mlx, env->mlx.win_x, env->mlx.win_y);
+	if (!env->img.mlx_img)
+		return (0);
+	env->map.win_map = (int *)mlx_get_data_addr(env->img.mlx_img, &bpp, &size_line, &endian);
+	if (!init_img(env))
+		return (0);
+	env->map.objets = init_pos_obj(env->map.all_map, *env);
+	if (!env->map.objets)
+		return (0);
+	return (1);
+}
+
+int	map(t_env *env, char *arg)
+{
+	env->map.all_map = get_map(arg);
+	if (!env->map.all_map)
+		return (0);
+	return (1);
+}
+
 int	main(int ac, char **av)
 {
 	t_env env;
-	int	bpp;
-	int	endian;
-	int	size_line;
 
 	init_struct(&env);
 	check_arg(ac, av[1]);
 	env.mlx.mlx = mlx_init();
 	if (!env.mlx.mlx)
 		return (1);
-	env.map.all_map = get_map(av[1]);
-	if (!env.map.all_map)
-		return (1);
-	env.map.height = tab_size(env.map.all_map);
-	env.map.size_line = ft_strlen(env.map.all_map[0]) - 1;
-	env.map.full_map = malloc(sizeof(int) * env.map.height * IMG * env.map.size_line * IMG);
-	if (!env.map.full_map)
-		return (1);
-	env.map.nb_move = 0;
-	env.map.nb_collectible = get_map_nb(env.map.all_map, 'C');
-	get_player_pos(env.map.all_map, &env.map.p_x, &env.map.p_y);
-
-	env.map.p_x = env.map.p_x * IMG + (IMG / 2 - WIDTH_PLAYER/2);
-	env.map.p_y = env.map.p_y * IMG + (IMG / 2 - HEIGHT_PLAYER/2);
-	if (!verif_wall(env.map.all_map))
-		return (1);
-	get_map_size(&env);
-	env.img.mlx_img = (int *)mlx_new_image(env.mlx.mlx, env.mlx.win_x, env.mlx.win_y);
-	if (!env.img.mlx_img)
-		return 1;
-	env.map.win_map = (int *)mlx_get_data_addr(env.img.mlx_img, &bpp, &size_line, &endian);
-	if (!init_img(&env))
-		return (free_struct(&env), 1);
-	env.map.objets = init_pos_obj(env.map.all_map, env);
-	if (!env.map.objets)
+	if (!map(&env, av[1]))
 		return (free_struct(&env), 0);
+	init_info(&env);
+	get_map_size(&env);
+	if (!init_map(&env))
+		return (free_struct(&env), 0);
+	if (!verif_map(&env))
+		return (free_struct(&env), 0);	
 	set_hooks_mlx(&env);
 	mlx_loop(env.mlx.mlx);
 }
