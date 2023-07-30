@@ -14,6 +14,10 @@
 #  define WIDTH_PLAYER 80
 # endif
 
+# ifndef SIZE_MINIMAP
+#  define SIZE_MINIMAP 6
+# endif
+
 # ifndef PLAYER
 #  define PLAYER 0xFFFFFF
 # endif

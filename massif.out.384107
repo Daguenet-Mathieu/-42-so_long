@@ -1,0 +1,551 @@
+desc: (none)
+cmd: ./so_long map/map9.ber
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=191593990
+mem_heap_B=2568007060
+mem_heap_extra_B=12804
+mem_stacks_B=0
+heap_tree=peak
+n4: 2568007060 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1073741824 0x40567E: init_square (so_long2.c:405)
+  n1: 1073741824 0x40567E: init_img (so_long2.c:923)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 1073741824 0x405743: init_square (so_long2.c:405)
+  n1: 1073741824 0x405743: init_img (so_long2.c:924)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 419430400 0x405804: init_square (so_long2.c:405)
+  n1: 419430400 0x405804: init_img (so_long2.c:925)
+   n1: 419430400 0x405F5D: init_map (so_long2.c:1032)
+    n0: 419430400 0x4062AB: main (so_long2.c:1072)
+ n0: 1093012 in 58 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=2
+#-----------
+time=342168985
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=499870361
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=672356241
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=918764641
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=6
+#-----------
+time=1165173041
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=1411581441
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=1657989841
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=1904398241
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=2150806641
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=2397215041
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=2643623441
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=2890031841
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=3013236041
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=3200506425
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=16
+#-----------
+time=3456771161
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=17
+#-----------
+time=3713035897
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=3841168265
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=3969300633
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=4097433001
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=4225565369
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=4353697737
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=4481830105
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=4609962473
+mem_heap_B=2568012710
+mem_heap_extra_B=12970
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=4738137047
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=4930359418
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=5058508766
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=5186664822
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=5314836354
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=5443001827
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=detailed
+n4: 2568022710 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1073741824 0x40567E: init_square (so_long2.c:405)
+  n1: 1073741824 0x40567E: init_img (so_long2.c:923)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 1073741824 0x405743: init_square (so_long2.c:405)
+  n1: 1073741824 0x405743: init_img (so_long2.c:924)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 419430400 0x405804: init_square (so_long2.c:405)
+  n1: 419430400 0x405804: init_img (so_long2.c:925)
+   n1: 419430400 0x405F5D: init_map (so_long2.c:1032)
+    n0: 419430400 0x4062AB: main (so_long2.c:1072)
+ n0: 1108662 in 70 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=31
+#-----------
+time=5571142983
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=5699284139
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=5827425295
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=5955566451
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=6083707607
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=detailed
+n4: 2568022710 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1073741824 0x40567E: init_square (so_long2.c:405)
+  n1: 1073741824 0x40567E: init_img (so_long2.c:923)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 1073741824 0x405743: init_square (so_long2.c:405)
+  n1: 1073741824 0x405743: init_img (so_long2.c:924)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 419430400 0x405804: init_square (so_long2.c:405)
+  n1: 419430400 0x405804: init_img (so_long2.c:925)
+   n1: 419430400 0x405F5D: init_map (so_long2.c:1032)
+    n0: 419430400 0x4062AB: main (so_long2.c:1072)
+ n0: 1108662 in 70 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=36
+#-----------
+time=6211848763
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=37
+#-----------
+time=6339989919
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=6468131075
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=6596272231
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=40
+#-----------
+time=6724413387
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=detailed
+n4: 2568022710 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1073741824 0x40567E: init_square (so_long2.c:405)
+  n1: 1073741824 0x40567E: init_img (so_long2.c:923)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 1073741824 0x405743: init_square (so_long2.c:405)
+  n1: 1073741824 0x405743: init_img (so_long2.c:924)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 419430400 0x405804: init_square (so_long2.c:405)
+  n1: 419430400 0x405804: init_img (so_long2.c:925)
+   n1: 419430400 0x405F5D: init_map (so_long2.c:1032)
+    n0: 419430400 0x4062AB: main (so_long2.c:1072)
+ n0: 1108662 in 70 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=41
+#-----------
+time=6852560115
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=6980711827
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=7108863539
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=7237015251
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=7365166963
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=detailed
+n4: 2568022710 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1073741824 0x40567E: init_square (so_long2.c:405)
+  n1: 1073741824 0x40567E: init_img (so_long2.c:923)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 1073741824 0x405743: init_square (so_long2.c:405)
+  n1: 1073741824 0x405743: init_img (so_long2.c:924)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 419430400 0x405804: init_square (so_long2.c:405)
+  n1: 419430400 0x405804: init_img (so_long2.c:925)
+   n1: 419430400 0x405F5D: init_map (so_long2.c:1032)
+    n0: 419430400 0x4062AB: main (so_long2.c:1072)
+ n0: 1108662 in 70 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=46
+#-----------
+time=7493318675
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=47
+#-----------
+time=7621470387
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=7749622099
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=7941849667
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=8065072467
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=detailed
+n4: 2568022710 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1073741824 0x40567E: init_square (so_long2.c:405)
+  n1: 1073741824 0x40567E: init_img (so_long2.c:923)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 1073741824 0x405743: init_square (so_long2.c:405)
+  n1: 1073741824 0x405743: init_img (so_long2.c:924)
+   n1: 1073741824 0x405F5D: init_map (so_long2.c:1032)
+    n0: 1073741824 0x4062AB: main (so_long2.c:1072)
+ n1: 419430400 0x405804: init_square (so_long2.c:405)
+  n1: 419430400 0x405804: init_img (so_long2.c:925)
+   n1: 419430400 0x405F5D: init_map (so_long2.c:1032)
+    n0: 419430400 0x4062AB: main (so_long2.c:1072)
+ n0: 1108662 in 70 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=51
+#-----------
+time=8188295267
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=52
+#-----------
+time=8311518067
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=53
+#-----------
+time=8434740867
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=8557963667
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=8681186467
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=8804422822
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=8927664182
+mem_heap_B=2568022710
+mem_heap_extra_B=13506
+mem_stacks_B=0
+heap_tree=empty

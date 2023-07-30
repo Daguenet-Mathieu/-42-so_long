@@ -12,6 +12,68 @@
 
 #include "so_long.h"
 
+void	fill_minimap(int color, int	*map, int size_line, int width)
+{
+	int	i;
+	int	c;
+	
+	c = 0;
+	i = 0;
+	while (c < SIZE_MINIMAP * width)
+	{
+		map[i] = color;
+		i++;
+		c++;
+		if (i == width)
+		{
+			map += (size_line);
+			i = 0;
+		}
+	}
+
+}
+
+void	set_minimap_util(t_minimap *minimap, char **map, int i, int j)
+{
+	int	size_line;
+
+	size_line = minimap->size_line;
+	if (map[j][i] == '1')
+		fill_minimap(WALL, minimap->minimap + (i * SIZE_MINIMAP + \
+		(j * SIZE_MINIMAP * size_line * SIZE_MINIMAP)), \
+		minimap->size_line * SIZE_MINIMAP, SIZE_MINIMAP);
+	else if (map[j][i] == 'E')
+		fill_minimap(EXIT, minimap->minimap + (i * SIZE_MINIMAP + \
+		(j * SIZE_MINIMAP * size_line * SIZE_MINIMAP)), \
+		minimap->size_line * SIZE_MINIMAP, SIZE_MINIMAP);
+	else if (map[j][i] == 'C')
+		fill_minimap(OBJET, minimap->minimap + (i * SIZE_MINIMAP + \
+		(j * SIZE_MINIMAP * size_line * SIZE_MINIMAP)), \
+		minimap->size_line * SIZE_MINIMAP, SIZE_MINIMAP);
+	else
+		fill_minimap(FLOOR, minimap->minimap + (i * SIZE_MINIMAP + \
+		(j * SIZE_MINIMAP * size_line * SIZE_MINIMAP)), \
+		minimap->size_line * SIZE_MINIMAP, SIZE_MINIMAP);
+}
+
+void	set_minimap(t_minimap *minimap, char **map)
+{
+	int	i;
+	int	j;
+
+	j = 0;
+	while (map[j])
+	{
+		i = 0;
+		while (map[j][i] && map[j][i] != '\n')
+		{
+			set_minimap_util(minimap, map, i, j);
+			i++;
+		}
+		j++;
+	}
+}
+
 void	ft_putnbr(int n)
 {
 	unsigned int	nb;
@@ -143,13 +205,13 @@ char	**cpy_map(char **map)
 	j = 0;
 	new_map = malloc(sizeof(char *) * (tab_size(map) + 1));
 	if (!new_map)
-		return (ft_error("fail malloc cpy ;ap\n"), NULL);
+		return (ft_error("alloc cpy map\n"), NULL);
 	while (map[j])
 	{
 		i = 0;
 		new_map[j] = malloc(ft_strlen(map[j] + 1));
 		if (!new_map[j])
-			return (free_tab(new_map), ft_error("fail malloc copy ligne map\n"), NULL);
+			return (free_tab(new_map), ft_error("alloc cpy line\n"), NULL);
 		while (map[j][i])
 		{
 			new_map[j][i] = map[j][i];
@@ -351,14 +413,12 @@ void	*init_square(int color, int size)
 {
 	int	*ptr;
 	int i;
-	int	size_max;
 
 	i = 0;
-	size_max = size * size;
-	ptr = malloc(sizeof(int) * size_max);
+	ptr = malloc(sizeof(int) * size);
 	if (!ptr)
 		return (NULL);
-	while (i < size_max)
+	while (i < size)
 	{
 			ptr[i] = color;
 			i++;
@@ -406,7 +466,7 @@ void	img_cpy(t_img img, int *ptr, int size_line, int nb_line)
 	{
 		if (img.img[i] != (int)TRANSPARENT)
 			ptr[j] = img.img[i];
-		if (j == img.width-1)
+		if (j == img.width - 1)
 		{
 			j = 0;
 			ptr += (size_line) * IMG;
@@ -554,11 +614,51 @@ void	copy_map(int *all_map, int *win_map, t_env env)
 	}
 }
 
+void	copy_minimap(t_env env, int *minimap, int *map)
+{
+	int	i;
+	int	j;
+	int	minimap_size;
+
+	minimap_size = env.minimap.size_line * SIZE_MINIMAP * \
+	env.minimap.nb_line * SIZE_MINIMAP;
+	i = 0;
+	j = 0;
+	while (i < minimap_size)
+	{
+		map[j] = minimap[i];
+		i++;
+		if (j == env.minimap.size_line * SIZE_MINIMAP - 1)
+		{
+			j = 0;
+			map += env.mlx.win_x;
+		}
+		else
+			j++;
+	}
+}
+
+void print_mini_player(t_env env)
+{
+	int	p_x;
+	int	p_y;
+
+	p_x = env.map.p_x / IMG;
+	p_y = env.map.p_y / IMG;
+	//if (env.map.p_x % IMG)
+	//	p_x += 1;
+	//if (env.map.p_y % WIDTH_PLAYER)
+	//	p_y += 1;
+	fill_minimap(PLAYER, env.map.win_map + (p_x * SIZE_MINIMAP + \
+	(p_y * SIZE_MINIMAP * env.mlx.win_x)), env.mlx.win_x, SIZE_MINIMAP);
+}
+
 void	load_map(t_env *env)
 {
 		t_index	index;
 		int		tmp_x;
 		int		tmp_y;
+
 		get_start_map(&index, env);
 		tmp_x = env->map.p_x - (index.x_start);
 		tmp_y = env->map.p_y - (index.y_start);
@@ -567,6 +667,11 @@ void	load_map(t_env *env)
 		  env->map.win_map, *env);
 		img_cpy(env->img.perso, &env->map.win_map[tmp_y*env->mlx.win_x+tmp_x],\
 		 env->mlx.win_x / IMG, 0);
+		if (env->minimap.active)
+		{
+			copy_minimap(*env, env->minimap.minimap, env->map.win_map);
+			print_mini_player(*env);
+		}
 		mlx_put_image_to_window(env->mlx.mlx,\
 		 env->mlx.mlx_win,env->img.mlx_img, 0, 0);
 }
@@ -625,6 +730,7 @@ void remove_collectible(t_env *env, int i, int j)
 			delete_obj(&env->map.objets[c], env->map.nb_collectible - c);
 			env->map.nb_collectible -= 1;
 			set_map(map + (j * IMG * (s_l) + (i * IMG)), s_l, IMG, IMG);
+			set_map(env->minimap.minimap + (j * SIZE_MINIMAP * (env->minimap.size_line*SIZE_MINIMAP) + (i * SIZE_MINIMAP)), env->minimap.size_line*SIZE_MINIMAP, SIZE_MINIMAP, SIZE_MINIMAP);
 		}
 		c++;
 	}
@@ -650,7 +756,6 @@ int	player_in_case(t_pos pos, t_case this_case, int pixel)
 	c_x = this_case.x * IMG + pixel;
 	c_y = this_case.y * IMG + pixel;
 	size = IMG - (pixel * 2);
-
 	if (c_x > pos.new_x && c_x < pos.new_x + WIDTH_PLAYER)
 	{
 		if (in_case_y(pos, c_y, size))
@@ -719,7 +824,7 @@ int check(t_env *env, t_pos pos, char c)
 	return (0);
 }
 
-void init_pos_l_r(t_pos *pos, t_env *env, int *move, int speed)
+void init_pos_l_r(t_pos *pos, t_env *env, int *move)
 {
 	pos->x = env->map.p_x;
 	pos->y = env->map.p_y;
@@ -727,16 +832,16 @@ void init_pos_l_r(t_pos *pos, t_env *env, int *move, int speed)
 	pos->new_y = pos->y;
 	if (env->key.right)
 	{
-		pos->new_x = pos->x + speed;
+		pos->new_x = 	pos->x + SPEED;
 		*move += 1;
 	}
 	if (env->key.left)
 	{
-		pos->new_x = pos->x - speed;
+		pos->new_x = pos->x - SPEED;
 		*move += 1;
 	}
 }
-void init_pos_t_d(t_pos *pos, t_env *env, int *move, int speed)
+void init_pos_t_d(t_pos *pos, t_env *env, int *move)
 {
 	pos->x = env->map.p_x;
 	pos->y = env->map.p_y;
@@ -744,62 +849,44 @@ void init_pos_t_d(t_pos *pos, t_env *env, int *move, int speed)
 	pos->new_y = pos->y;
 	if (env->key.down)
 	{
-		pos->new_y = pos->y + speed;
+		pos->new_y = pos->y + SPEED;
 		*move += 1;
 	}
 	if (env->key.up)
 	{
-		pos->new_y = pos->y - speed;
+		pos->new_y = pos->y - SPEED;
 		*move += 1;
 	}
 }
 
-int	multiple_key(t_env *env)
+void	do_move(t_pos pos, t_env *env, int *player, int new_pos)
 {
-	int	ret;
-
-	ret = 0;
-	if ((env->key.left && env->key.down) || (env->key.left && env->key.up))
-		ret += 1;
-	if ((env->key.right && env->key.down) || (env->key.right && env->key.up))
-		ret += 1;
-	if ((env->key.up && env->key.left) || (env->key.up && env->key.right))
-		ret += 1;
-	if ((env->key.down && env->key.left) || (env->key.down && env->key.right))
-		ret += 1;
-	return (ret);
+		check(env, pos, 'C');
+		*player = new_pos;
 }
 
 int	handle_key(t_env *env)
 {
 	t_pos	pos;
 	int		move;
-	int		speed;
 
 	move = 0;
-	speed = SPEED;
-	if (multiple_key(env))
-		speed = speed / 2;
-	init_pos_t_d(&pos, env, &move, speed);
+	init_pos_t_d(&pos, env, &move);
 	if (!check(env, pos, '1'))
-	{
-		check(env, pos, 'C');
-		env->map.p_y = pos.new_y;
-		load_map(env);
-	}
-	init_pos_l_r(&pos, env, &move, speed);
-	if (check(env, pos, '1'))
-		return (0);
-	check(env, pos, 'C');
-	env->map.p_x = pos.new_x;
-	load_map(env);
+		do_move(pos, env, &env->map.p_y, pos.new_y);
+	init_pos_l_r(&pos, env, &move);
+	if (!check(env, pos, '1'))
+		do_move(pos, env, &env->map.p_x, pos.new_x);
 	if (move)
+	{	
+		load_map(env);
 		print_nb_move(env);
+	}
 	if (!env->map.nb_collectible && check(env, pos, 'E'))
-		{
-			ft_putstr("\nEnd!\n", 1);
-			exit (0);
-		}
+	{
+		ft_putstr("\nEnd!\n", 1);
+		exit (0);
+	}
 	return (0);
 }
 
@@ -817,12 +904,10 @@ void	get_map_size(t_env *env)
 		env->mlx.win_y = env->mlx.screen_y;
 }
 
-void	ajust_touch(int *key1, int *key2)
+void	ajust_key_release(int *key1, int *key2)
 {
 		if (*key1 == 2)
 			*key2 = 1;
-		if (*key1 == 1)
-			*key2 = 0;
 		else if (*key2 == 2)
 			*key2 = 1;
 		*key1 = 0;
@@ -830,53 +915,50 @@ void	ajust_touch(int *key1, int *key2)
 
 int	handle_keyrelease(int key_code, t_env *env)
 {
+	if (key_code == 102)
+	{
+		env->minimap.active = 0;
+		load_map(env);
+	}
 	if (key_code == 65363 || key_code == 100)
-		ajust_touch(&env->key.right, &env->key.left);
+		ajust_key_release(&env->key.right, &env->key.left);
 	else if (key_code == 65362 || key_code == 119)
-		ajust_touch(&env->key.up, &env->key.down);
+		ajust_key_release(&env->key.up, &env->key.down);
 	else if (key_code == 65361 || key_code == 97)
-		ajust_touch(&env->key.left, &env->key.right);
+		ajust_key_release(&env->key.left, &env->key.right);
 	else if (key_code == 65364 || key_code == 115)
-		ajust_touch(&env->key.down, &env->key.up);
+		ajust_key_release(&env->key.down, &env->key.up);
 	return (key_code);
 }
 
-int	handle_keypress(int key_code,	t_env *env)
+void	ajust_key_press(int *key1, int *key2)
+{
+	if (*key2)
+		*key1 = 2;
+	else
+		*key1 = 1;
+	*key2 = 0;
+}
+
+int	handle_keypress(int key_code, t_env *env)
 {
 	if (key_code == 65307)
 		exit(0);
+	if (key_code == 101)
+	{
+		env->minimap.active = 1;
+		load_map(env);
+	}
 	if (key_code == 65363 || key_code == 100)
-	{
-		if (env->key.left)
-			env->key.right = 2;
-		else
-			env->key.right = 1;
-		env->key.left = 0;
-	}
+		ajust_key_press(&env->key.right, &env->key.left);
 	else if (key_code == 65362 || key_code == 119)
-	{
-		if (env->key.down)
-			env->key.up = 2;
-		else
-			env->key.up = 1;
-		env->key.down = 0;
-	}
+		ajust_key_press(&env->key.up, &env->key.down);
+
 	else if (key_code == 65361 || key_code == 97)
-	{
-		if (env->key.right)
-			env->key.left = 2;
-		else
-			env->key.left = 1;
-		env->key.right = 0;
-	}
+		ajust_key_press(&env->key.left, &env->key.right);
+
 	else if (key_code == 65364 || key_code == 115)
-	{
-		if (env->key.up)
-			env->key.down = 2;
-		else
-			env->key.down = 1;
-		env->key.up = 0;
-	}
+		ajust_key_press(&env->key.down, &env->key.up);
 	return (key_code);
 }
 
@@ -1018,6 +1100,18 @@ int	map(t_env *env, char *arg)
 	return (1);
 }
 
+int	init_minimap(t_env *env)
+{
+	env->minimap.active = 1;
+	env->minimap.size_line = env->map.size_line;
+	env->minimap.nb_line = env->map.height;
+	env->minimap.minimap = malloc(sizeof(int) * env->minimap.size_line * SIZE_MINIMAP * env->minimap.nb_line * SIZE_MINIMAP);
+	if (!env->minimap.minimap)
+		return (0);
+	set_minimap(&env->minimap, env->map.all_map);
+	return (1);
+}
+
 int	main(int ac, char **av)
 {
 	t_env env;
@@ -1034,7 +1128,9 @@ int	main(int ac, char **av)
 	if (!init_map(&env))
 		return (free_struct(&env), 0);
 	if (!verif_map(&env))
-		return (free_struct(&env), 0);	
+		return (free_struct(&env), 0);
+	if (!init_minimap(&env))
+		return (free_struct(&env), 0);
 	set_hooks_mlx(&env);
 	mlx_loop(env.mlx.mlx);
 }
