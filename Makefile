@@ -13,7 +13,25 @@
 SRC				= flood_fill/flood_fill_utils.c\
 				  get_next_line/get_next_line.c\
 				  flood_fill/flood_fill.c\
-				  so_long2.c
+				  so_long.c\
+				  collision_util.c\
+				  img.c\
+				  init.c\
+				  key_util.c\
+				  key.c\
+				  list_map.c\
+				  map_utils.c\
+				  map_utils2.c\
+				  map_utils3.c\
+				  map.c\
+				  minimap_utils.c\
+				  minimap.c\
+				  mlx.c\
+				  print.c\
+				  tab.c\
+				  collision.c\
+				  utils.c
+
 SRCBONUS			= 
 OBJS				= ${SRC:.c=.o}
 OBJBONUS			= ${SRCBONUS:.c=.o}
