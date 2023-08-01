@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:27:05 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 20:55:51 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/01 21:31:40 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ char	**cpy_map(char **map)
 	while (map[j])
 	{
 		i = 0;
-		printf("malloc size == %d\n", ft_strlen(map[j] + 1));
-		new_map[j] = malloc(ft_strlen(map[j] + 1));
+		new_map[j] = malloc(ft_strlen(map[j]) + 1);
 		if (!new_map[j])
 			return (free_tab(new_map), ft_error("alloc cpy line\n"), NULL);
 		while (map[j][i])
@@ -34,7 +33,6 @@ char	**cpy_map(char **map)
 			new_map[j][i] = map[j][i];
 			i++;
 		}
-		printf("i in copy map == %d\n", i);
 		new_map[j][i] = 0;
 		j++;
 	}
