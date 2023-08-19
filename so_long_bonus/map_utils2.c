@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:44 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 19:48:03 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/19 04:54:21 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ void	init_full_map(t_env *env)
 	iter.j = 0;
 	iter.c = 0;
 	iter.map = env->map.all_map;
-	set_map(env->map.full_map, env->map.size_line * IMG, \
-	IMG * env->map.size_line, IMG * env->map.height);
+	//set_map(env->map.full_map, env->map.size_line * IMG, \
+	//IMG * env->map.size_line, IMG * env->map.height);
 	while (iter.map[iter.j])
 	{
 		iter.i = 0;
@@ -85,6 +85,9 @@ void	set_ptr(t_env *env, t_iter iter, int *c)
 {
 	if (iter.map[iter.j][iter.i] == '1')
 		img_cpy(env->img.wall, &env->map.full_map[iter.count * IMG], \
+		env->map.size_line, iter.j);
+	if (iter.map[iter.j][iter.i] == '0')
+		img_cpy(env->img.floor, &env->map.full_map[iter.count * IMG], \
 		env->map.size_line, iter.j);
 	else if (iter.map[iter.j][iter.i] == 'E')
 		img_cpy(env->img.exit, &env->map.full_map[iter.count * IMG], \

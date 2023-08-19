@@ -12,9 +12,10 @@
 #include "get_next_line/get_next_line.h"
 #include "flood_fill/flood_fill.h"
 #include "image.h"
+#include "map.h"
 
 # ifndef SPEED
-#  define SPEED  1
+#  define SPEED  8
 # endif
 
 # ifndef BEFORE
@@ -111,10 +112,10 @@ typedef struct	s_map
 
 typedef struct	s_img
 {
-	int			*img;
-	int			size;
-	int			height;
-	int			width;
+	int	*img;
+	int	size;
+	int	height;
+	int	width;	
 }				t_img;
 
 typedef struct	s_img_list
@@ -123,6 +124,7 @@ typedef struct	s_img_list
 		t_img	objet;
 		t_img	exit;
 		t_img	perso;
+		t_img	floor;
 		void	*mlx_img;
 }				t_img_list;
 
@@ -145,6 +147,7 @@ typedef struct s_list
 	struct s_list *next;
 }		t_list;
 
+char	**get_room();
 void	ft_putnbr(int n);
 void	ft_putstr(char *s, int fd);
 void	ft_error(char *s);

@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:56 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 19:55:49 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/19 04:53:56 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 int	init_img(t_env *env)
 {
+	init_struct_img(&env->img.floor, IMG, IMG);
 	init_struct_img(&env->img.wall, IMG, IMG);
 	init_struct_img(&env->img.objet, IMG / 2, IMG / 2);
 	init_struct_img(&env->img.exit, IMG, IMG);
 	init_struct_img(&env->img.perso, HEIGHT_PLAYER, WIDTH_PLAYER);
+	env->img.floor.img = init_square(FLOOR, env->img.wall.size);
 	env->img.wall.img = init_square(WALL, env->img.wall.size);
 	env->img.exit.img = init_square(EXIT, env->img.exit.size);
 	env->img.perso.img = init_square(PLAYER, env->img.perso.size);

@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:41 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/03 15:19:26 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/19 04:02:14 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,18 @@ int	verif_map(t_env *env)
 	return (1);
 }
 
+void	ft_memset(int *ptr, int size, int value)
+{
+	int i;
+
+	i = 0;
+	while (i < size)
+	{
+		ptr[i] = value;
+		i++;
+	}
+}
+
 int	init_map(t_env *env)
 {
 	int	endian;
@@ -38,6 +50,7 @@ int	init_map(t_env *env)
 			* env->map.size_line * IMG);
 	if (!env->map.full_map)
 		return (0);
+	ft_memset(env->map.full_map , env->map.height * IMG * env->map.size_line * IMG, 0);
 	env->img.mlx_img = (int *)mlx_new_image(env->mlx.mlx, \
 	env->mlx.win_x, env->mlx.win_y);
 	if (!env->img.mlx_img)
@@ -54,7 +67,8 @@ int	init_map(t_env *env)
 
 int	map(t_env *env, char *arg)
 {
-	env->map.all_map = get_map(arg);
+	(void) arg;
+	env->map.all_map = get_room();
 	if (!env->map.all_map)
 		return (0);
 	return (1);

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: madaguen <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/25 05:25:07 by madaguen          #+#    #+#              #
-#    Updated: 2023/05/04 21:16:30 by madaguen         ###   ########.fr        #
+#    Updated: 2023/08/19 04:00:32 by madaguen         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,8 @@ SRC				= flood_fill/flood_fill_utils.c\
 				  print.c\
 				  tab.c\
 				  collision.c\
-				  utils.c
+				  utils.c\
+				  get_map.c
 
 SRCBONUS			= 
 OBJS				= ${SRC:.c=.o}
