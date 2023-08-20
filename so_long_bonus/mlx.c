@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:56 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/19 04:53:56 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/20 20:43:22 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,15 @@ int	init_img(t_env *env)
 void	free_struct(t_env *env)
 {
 	(void) env;
+	write(1, "\n", 1);
+	exit(0);
 	return ;
 }
 
 int	mlx_close(t_env *env)
 {
 	(void) env;
-	exit(0);
+	free_struct(env);
 	return (0);
 }
 

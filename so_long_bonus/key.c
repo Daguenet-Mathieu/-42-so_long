@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:24:41 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/19 04:58:44 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/20 20:44:09 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	ajust_key_press(int *key1, int *key2)
 int	handle_keypress(int key_code, t_env *env)
 {
 	if (key_code == 65307)
-		exit(0);
+		free_struct(env);
 	if (key_code == 101)
 	{
 		env->minimap.active = env->minimap.active ^ 1;

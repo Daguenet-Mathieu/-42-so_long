@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:50 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 20:19:04 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/20 16:28:36 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	check_map_name(char *s, char *s2)
 		len--;
 		len2--;
 	}
-	if (len2 == -1)
+	if (len2 == -1 || len == -1)
 		return (1);
 	else
 		return (0);

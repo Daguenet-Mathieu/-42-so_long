@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:47 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 20:49:01 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/20 19:35:25 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	get_start_map(t_index *index, t_env *env)
 void	get_map_size(t_env *env)
 {
 	env->map.height = tab_size(env->map.all_map);
-	env->map.size_line = ft_strlen(env->map.all_map[0]) - 1;
+	env->map.size_line = ft_strlen(env->map.all_map[0]);
 	mlx_get_screen_size(env->mlx.mlx, &env->mlx.screen_x, &env->mlx.screen_y);
 	env->mlx.screen_y -= 125;
 	env->mlx.win_x = env->map.size_line * IMG;

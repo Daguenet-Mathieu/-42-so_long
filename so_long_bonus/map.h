@@ -1,6 +1,14 @@
 # ifndef MAP_H
 # define MAP_H
 
+# ifndef HEIGHT
+#  define HEIGHT  8
+# endif
+
+# ifndef WIDTH
+#  define WIDTH  15
+# endif
+
 typedef struct s_info
 {
     int top;

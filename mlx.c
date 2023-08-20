@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:56 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 19:55:49 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/20 21:48:14 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,27 @@ int	init_img(t_env *env)
 }
 
 void	free_struct(t_env *env)
-{
+{		
 	(void) env;
-	return ;
+
+	mlx_destroy_window(env->mlx.mlx, env->mlx.mlx_win);
+	mlx_destroy_display(env->mlx.mlx);
+	free_tab(env->map.all_map);
+	//mlx_destroy_image(env->mlx.mlx, env->map.win_map);
+	mlx_loop_end(env->mlx.mlx);
+	free(env->mlx.mlx);
+	free(env->img.wall.img);
+	free(env->img.objet.img);
+	free(env->img.exit.img);
+	free(env->img.perso.img);
+	free(env->minimap.minimap);
+	exit(0);
 }
 
 int	mlx_close(t_env *env)
 {
 	(void) env;
-	exit(0);
+	free_struct(env);
 	return (0);
 }
 

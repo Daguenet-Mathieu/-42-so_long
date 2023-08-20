@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:25:45 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 19:54:16 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/20 21:02:10 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	init_minimap(t_env *env)
 	* SIZE_MINIMAP * env->minimap.nb_line * SIZE_MINIMAP);
 	if (!env->minimap.minimap)
 		return (0);
+	ft_memset(env->minimap.minimap, env->minimap.size_line * SIZE_MINIMAP * env->minimap.nb_line * SIZE_MINIMAP, 0);
 	set_minimap(&env->minimap, env->map.all_map);
 	return (1);
 }

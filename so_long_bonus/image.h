@@ -11,7 +11,7 @@
 
 
 # ifndef WIDTH_PLAYER
-#  define WIDTH_PLAYER 80
+#  define WIDTH_PLAYER 64
 # endif
 
 # ifndef SIZE_MINIMAP

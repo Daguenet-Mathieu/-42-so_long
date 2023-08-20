@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:25:46 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 20:11:16 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/20 21:03:14 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ void	copy_minimap(t_env env, int *minimap, int *map)
 	j = 0;
 	while (i < minimap_size)
 	{
-		map[j] = minimap[i];
+		if ((unsigned int)minimap[i] != TRANSPARENT)
+			map[j] = minimap[i];
 		i++;
 		if (j == env.minimap.size_line * SIZE_MINIMAP - 1)
 		{
@@ -84,6 +85,8 @@ void	set_minimap_util(t_minimap *minimap, char **map, int i, int j)
 		fill_minimap(OBJET, minimap->minimap + (i * SIZE_MINIMAP + \
 		(j * SIZE_MINIMAP * size_line * SIZE_MINIMAP)), \
 		minimap->size_line * SIZE_MINIMAP, SIZE_MINIMAP);
+	else if (map[j][i] == '2')
+		fill_minimap(TRANSPARENT, minimap->minimap + (i * SIZE_MINIMAP + (j * SIZE_MINIMAP * size_line * SIZE_MINIMAP)),	minimap->size_line * SIZE_MINIMAP, SIZE_MINIMAP);
 	else
 		fill_minimap(FLOOR, minimap->minimap + (i * SIZE_MINIMAP + \
 		(j * SIZE_MINIMAP * size_line * SIZE_MINIMAP)), \

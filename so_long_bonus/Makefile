@@ -6,7 +6,7 @@
 #    By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/25 05:25:07 by madaguen          #+#    #+#              #
-#    Updated: 2023/08/19 04:00:32 by madaguen         ###   ########.fr        #
+#    Updated: 2023/08/20 20:59:16 by madaguen         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ OBJS				= ${SRC:.c=.o}
 OBJBONUS			= ${SRCBONUS:.c=.o}
 HEADER				= so_long.h
 CC					= clang
-FLAGS				= -Wall -Wextra -Werror -g
+FLAGS				= -Wall -Wextra -g
 FLAGSDEBUG			= -Wall -Wextra -Werror -g -fsanitize=address
 NAME				= so_long
 NAMEBONUS			= 

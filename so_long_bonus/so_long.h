@@ -15,7 +15,7 @@
 #include "map.h"
 
 # ifndef SPEED
-#  define SPEED  8
+#  define SPEED  1
 # endif
 
 # ifndef BEFORE
@@ -212,5 +212,6 @@ void	init_info(t_env *env);
 int		init_map(t_env *env);
 int		map(t_env *env, char *arg);
 int		init_minimap(t_env *env);
+void	ft_memset(int *ptr, int size, int value);
 
 #endif

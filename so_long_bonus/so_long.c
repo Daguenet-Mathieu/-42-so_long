@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 20:49:01 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/19 04:12:56 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/20 19:44:10 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	main(int ac, char **av)
 	get_map_size(&env);
 	if (!init_map(&env))
 		return (free_struct(&env), 0);
+	print_map_2(env.map.all_map);
 	//if (!verif_map(&env))
 	//	return (free_struct(&env), 0);
 	if (!init_minimap(&env))
