@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:25:48 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 20:00:38 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/01 21:08:38 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	delete_obj(t_obj *obj, int size)
 	int	i;
 
 	i = 0;
-	while (i < size)
+	while (i < size - 1)
 	{
 		obj[i] = obj[i + 1];
 		i++;

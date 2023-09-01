@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:41 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/03 15:19:26 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/01 21:16:36 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,23 @@
 int	verif_map(t_env *env)
 {	
 	char	**new_map;
+	int		x;
+	int		y;
 
-	(void) env;
 	if (!verif_wall(env->map.all_map))
-		return (0);
+		return (ft_error("map must be surrounded by walls\n"), 0);
 	new_map = cpy_map(env->map.all_map);
 	if (!new_map)
-		return (0);
-	//flood_fill(env->map.p_x, env->map.p_y, new_map);
-	//verif resuktat
+		free_struct(env);
+	get_player_pos(env->map.all_map, &x, &y);
+	flood_fill(x, y, new_map);
+	if (get_map_nb(new_map, 'C') || get_map_nb(new_map, 'E')
+		|| !verif_char(env->map.all_map))
+	{
+		ft_error("invalid map\n");
+		free_tab(new_map);
+		free_struct(env);
+	}
 	free_tab(new_map);
 	return (1);
 }
@@ -37,18 +45,18 @@ int	init_map(t_env *env)
 	env->map.full_map = malloc(sizeof(int) * env->map.height * IMG
 			* env->map.size_line * IMG);
 	if (!env->map.full_map)
-		return (0);
+		free_struct(env);
 	env->img.mlx_img = (int *)mlx_new_image(env->mlx.mlx, \
 	env->mlx.win_x, env->mlx.win_y);
 	if (!env->img.mlx_img)
-		return (0);
+		free_struct(env);
 	env->map.win_map = (int *)mlx_get_data_addr(env->img.mlx_img, \
 	&bpp, &size_line, &endian);
 	if (!init_img(env))
-		return (0);
+		free_struct(env);
 	env->map.objets = init_pos_obj(env->map.all_map, *env);
 	if (!env->map.objets)
-		return (0);
+		free_struct(env);
 	return (1);
 }
 
@@ -56,7 +64,7 @@ int	map(t_env *env, char *arg)
 {
 	env->map.all_map = get_map(arg);
 	if (!env->map.all_map)
-		return (0);
+		free_struct(env);
 	return (1);
 }
 

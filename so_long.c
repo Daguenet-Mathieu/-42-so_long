@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 20:49:01 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 19:56:49 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/01 20:47:38 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,14 @@ int	main(int ac, char **av)
 	t_env	env;
 
 	init_struct(&env);
-	check_arg(ac, av[1]);
+	if (!check_arg(ac, av[1]))
+		return (ft_error("only one parameter and map file should be .ber\n"),
+			free_struct(&env), 0);
 	env.mlx.mlx = mlx_init();
 	if (!env.mlx.mlx)
-		return (1);
+		free_struct(&env);
 	if (!map(&env, av[1]))
-		return (free_struct(&env), 0);
+		free_struct(&env);
 	init_info(&env);
 	get_map_size(&env);
 	if (!init_map(&env))

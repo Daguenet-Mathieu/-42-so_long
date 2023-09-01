@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:01 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 19:40:09 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/01 21:14:46 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,12 @@ void	init_info(t_env *env)
 {
 	env->map.nb_move = 0;
 	env->map.nb_collectible = get_map_nb(env->map.all_map, 'C');
+	if (!env->map.nb_collectible)
+		return (ft_error("la map should contain object\n"), free_struct(env));
+	if (get_map_nb(env->map.all_map, 'P') != 1)
+		return (ft_error("map should contain 1 player\n"), free_struct(env));
+	if (get_map_nb(env->map.all_map, 'E') == 0)
+		return (ft_error("map should contain an exit\n"), free_struct(env));
 	get_player_pos(env->map.all_map, &env->map.p_x, &env->map.p_y);
 	env->map.p_x = env->map.p_x * IMG + (IMG / 2 - WIDTH_PLAYER / 2);
 	env->map.p_y = env->map.p_y * IMG + (IMG / 2 - HEIGHT_PLAYER / 2);

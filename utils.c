@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:02 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 20:11:04 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/01 21:17:36 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,25 @@ void	ft_putstr(char *s, int fd)
 void	ft_error(char *s)
 {
 	ft_putstr(s, 2);
+}
+
+int	verif_char(char **map)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j] && map[i][j] != '\n')
+		{
+			if (map[i][j] != '0' && map[i][j] != 'C' && map[i][j] != 'P'
+				&& map[i][j] != 'E' && map[i][j] != '1')
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
 }

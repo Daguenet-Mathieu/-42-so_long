@@ -14,15 +14,15 @@
 #include "image.h"
 
 # ifndef SPEED
-#  define SPEED  1
+#  define SPEED 1
 # endif
 
 # ifndef BEFORE
-#  define BEFORE  0
+#  define BEFORE 0
 # endif
 
 # ifndef AFTER
-#  define AFTER  1
+#  define AFTER 1
 # endif
 
 typedef struct	s_case
@@ -162,6 +162,7 @@ int		get_map_nb(char **map, char c);
 int		check_nb_elem(t_env *env);
 void	free_struct(t_env *env);
 int		verif_wall(char **map);
+int		verif_char(char **map);
 int		mlx_close(t_env *env);
 void	init_struct(t_env *env);
 void	get_player_pos(char **map, int *x, int *y);
@@ -190,9 +191,9 @@ int		player_in_case(t_pos pos, t_case this_case, int pixel);
 int		verif_case(t_env *env, t_pos pos, char c, t_case this_case);
 void	init_zone(t_case zone[4], t_pos pos);
 int		check(t_env *env, t_pos pos, char c);
-void	init_pos_l_r(t_pos *pos, t_env *env, int *move);
+void	init_pos_l_r(t_pos *pos, t_env *en, int *move);
 void	init_pos_t_d(t_pos *pos, t_env *env, int *move);
-void	do_move(t_pos pos, t_env *env, int *player, int new_pos);
+int	do_move(t_pos pos, t_env *env, int *player, int new_pos);
 int		handle_key(t_env *env);
 void	get_map_size(t_env *env);
 void	ajust_key_release(int *key1, int *key2);
@@ -209,5 +210,6 @@ void	init_info(t_env *env);
 int		init_map(t_env *env);
 int		map(t_env *env, char *arg);
 int		init_minimap(t_env *env);
+void	lst_clear(t_list **list);
 
 #endif

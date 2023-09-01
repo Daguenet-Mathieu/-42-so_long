@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:25:43 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/20 12:01:21 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/08/31 20:24:33 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,19 @@ int	lst_size(t_list *a)
 	return (i);
 }
 
+void	lst_clear(t_list **list)
+{
+	t_list	*tmp;
+
+	while (*list)
+	{
+		tmp = (*list)->next;
+		free((*list)->content);
+		free(*list);
+		*list = tmp;
+	}
+}
+
 char	**convert_list(t_list **tmp_map)
 {
 	char	**map;
@@ -65,7 +78,7 @@ char	**convert_list(t_list **tmp_map)
 	size = lst_size(*tmp_map);
 	map = malloc(sizeof(char *) * (size + 1));
 	if (!map)
-		return (NULL);
+		return (lst_clear(tmp_map), NULL);
 	while (i < size)
 	{
 		map[i] = (*tmp_map)->content;

@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:26:50 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/01 20:19:04 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/01 21:15:20 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	**get_map(char *file_name)
 
 	fd = open(file_name, O_RDONLY);
 	if (fd < 0)
-		return (ft_error("fail open"), NULL);
+		return (ft_error("fail open\n"), NULL);
 	tmp_map = NULL;
 	while (1)
 	{
@@ -31,7 +31,7 @@ char	**get_map(char *file_name)
 			break ;
 		new = lst_new(line);
 		if (!new)
-			return (NULL);
+			return (lst_clear(&tmp_map), NULL);
 		add_back(&tmp_map, new);
 	}
 	map = convert_list(&tmp_map);
@@ -52,7 +52,7 @@ int	check_map_name(char *s, char *s2)
 		len--;
 		len2--;
 	}
-	if (len2 == -1)
+	if (len2 == -1 && s[len + 1] == '.')
 		return (1);
 	else
 		return (0);

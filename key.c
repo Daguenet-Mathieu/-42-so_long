@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 19:24:41 by madaguen          #+#    #+#             */
-/*   Updated: 2023/08/05 18:56:15 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/01 22:13:40 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	ajust_key_press(int *key1, int *key2)
 int	handle_keypress(int key_code, t_env *env)
 {
 	if (key_code == 65307)
-		exit(0);
+		return (write(1, "\n", 1), free_struct(env), 0);
 	if (key_code == 101)
 	{
 		env->minimap.active = env->minimap.active ^ 1;
@@ -67,23 +67,23 @@ int	handle_key(t_env *env)
 {
 	t_pos	pos;
 	int		move;
+	int		check_move;
 
 	move = 0;
-	init_pos_t_d(&pos, env, &move);
-	if (!check(env, pos, '1'))
-		do_move(pos, env, &env->map.p_y, pos.new_y);
-	init_pos_l_r(&pos, env, &move);
-	if (!check(env, pos, '1'))
-		do_move(pos, env, &env->map.p_x, pos.new_x);
+	check_move = 0;
+	init_pos_t_d(&pos, env, &check_move);
+	if (!check(env, pos, '1') && check_move)
+		move = do_move(pos, env, &env->map.p_y, pos.new_y);
+	check_move = 0;
+	init_pos_l_r(&pos, env, &check_move);
+	if (!check(env, pos, '1') && check_move)
+		move = do_move(pos, env, &env->map.p_x, pos.new_x);
 	if (move)
 	{	
 		load_map(env);
 		print_nb_move(env);
 	}
 	if (!env->map.nb_collectible && check(env, pos, 'E'))
-	{
-		ft_putstr("\nEnd!\n", 1);
-		exit (0);
-	}
+		return (ft_putstr("\nEnd!\n", 1), free_struct(env), 0);
 	return (0);
 }
